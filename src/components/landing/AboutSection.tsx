@@ -25,7 +25,7 @@ const AboutSection = () => {
                 <img 
                   src={razProfile} 
                   alt="רז בלישה" 
-                  className="w-full h-full object-cover object-center"
+                  className="w-full h-full object-cover object-center scale-150"
                 />
               </div>
 
