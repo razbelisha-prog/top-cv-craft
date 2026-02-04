@@ -1,6 +1,12 @@
-import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 import testimonial1 from "@/assets/testimonial-1.png";
 import testimonial2 from "@/assets/testimonial-2.png";
@@ -17,16 +23,6 @@ const testimonialImages = [
 ];
 
 const TestimonialsSection = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  const nextSlide = () => {
-    setCurrentIndex((prev) => (prev + 1) % testimonialImages.length);
-  };
-
-  const prevSlide = () => {
-    setCurrentIndex((prev) => (prev - 1 + testimonialImages.length) % testimonialImages.length);
-  };
-
   return (
     <section className="py-14 bg-background" dir="rtl">
       <div className="container px-4">
@@ -35,61 +31,35 @@ const TestimonialsSection = () => {
             <span className="text-gradient-primary">לקוחות</span> מספרים
           </h2>
 
-          {/* Carousel container */}
-          <div className="relative">
-            {/* Navigation buttons */}
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={prevSlide}
-              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-card shadow-card -mr-4 md:-mr-6 btn-press hover:border-primary/30 transition-all duration-200"
+          {/* Carousel */}
+          <div className="px-12 md:px-16">
+            <Carousel
+              opts={{
+                align: "center",
+                loop: true,
+                direction: "rtl",
+              }}
+              className="w-full"
             >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-            
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={nextSlide}
-              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-card shadow-card -ml-4 md:-ml-6 btn-press hover:border-primary/30 transition-all duration-200"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-
-            {/* Slides container */}
-            <div className="overflow-hidden mx-8 md:mx-12">
-              <div 
-                className="flex transition-transform duration-300 ease-out gap-4"
-                style={{ transform: `translateX(${currentIndex * -280}px)` }}
-              >
+              <CarouselContent className="-ml-2 md:-ml-4">
                 {testimonialImages.map((image, index) => (
-                  <div 
-                    key={index}
-                    className="flex-shrink-0 w-[250px] md:w-[270px] rounded-2xl shadow-card border border-border/50 overflow-hidden card-interactive"
-                    style={{ aspectRatio: '1080/1350' }}
-                  >
-                    <img 
-                      src={image} 
-                      alt={`המלצה ${index + 1}`}
-                      className="w-full h-full object-cover object-center"
-                    />
-                  </div>
+                  <CarouselItem key={index} className="pl-2 md:pl-4 basis-[280px] md:basis-[320px]">
+                    <div 
+                      className="rounded-2xl shadow-card border border-border/50 overflow-hidden card-interactive"
+                      style={{ aspectRatio: '1080/1350' }}
+                    >
+                      <img 
+                        src={image} 
+                        alt={`המלצה ${index + 1}`}
+                        className="w-full h-full object-cover object-center"
+                      />
+                    </div>
+                  </CarouselItem>
                 ))}
-              </div>
-            </div>
-
-            {/* Dots indicator */}
-            <div className="flex justify-center gap-2 mt-5">
-              {testimonialImages.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentIndex(index)}
-                  className={`w-2 h-2 rounded-full transition-all duration-200 hover:scale-125 ${
-                    index === currentIndex ? 'bg-primary scale-110' : 'bg-muted hover:bg-primary/50'
-                  }`}
-                />
-              ))}
-            </div>
+              </CarouselContent>
+              <CarouselPrevious className="right-0 -mr-12 md:-mr-14 bg-card shadow-card btn-press hover:border-primary/30 transition-all duration-200" />
+              <CarouselNext className="left-0 -ml-12 md:-ml-14 bg-card shadow-card btn-press hover:border-primary/30 transition-all duration-200" />
+            </Carousel>
           </div>
         </div>
       </div>
