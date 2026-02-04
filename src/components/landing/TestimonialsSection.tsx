@@ -1,5 +1,3 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
   Carousel,
   CarouselContent,
@@ -31,7 +29,7 @@ const TestimonialsSection = () => {
             <span className="text-gradient-primary">לקוחות</span> מספרים
           </h2>
 
-          {/* Carousel */}
+          {/* Phone Frame Carousel */}
           <div className="px-12 md:px-16">
             <Carousel
               opts={{
@@ -41,24 +39,31 @@ const TestimonialsSection = () => {
               }}
               className="w-full"
             >
-              <CarouselContent className="-ml-2 md:-ml-4">
+              <CarouselContent className="-ml-3 md:-ml-4">
                 {testimonialImages.map((image, index) => (
-                  <CarouselItem key={index} className="pl-2 md:pl-4 basis-[280px] md:basis-[320px]">
-                    <div 
-                      className="rounded-2xl shadow-card border border-border/50 overflow-hidden card-interactive"
-                      style={{ aspectRatio: '1080/1350' }}
-                    >
-                      <img 
-                        src={image} 
-                        alt={`המלצה ${index + 1}`}
-                        className="w-full h-full object-cover object-center"
-                      />
+                  <CarouselItem key={index} className="pl-3 md:pl-4 basis-[260px] md:basis-[300px]">
+                    {/* Phone Frame */}
+                    <div className="relative bg-[#1a1a1a] rounded-[2.5rem] p-2 shadow-elevated">
+                      {/* Phone notch */}
+                      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-6 bg-[#1a1a1a] rounded-b-2xl z-10" />
+                      
+                      {/* Phone screen */}
+                      <div className="relative rounded-[2rem] overflow-hidden bg-[#e5ddd5]">
+                        <img 
+                          src={image} 
+                          alt={`המלצה ${index + 1}`}
+                          className="w-full h-auto object-contain"
+                        />
+                      </div>
+                      
+                      {/* Home indicator */}
+                      <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-24 h-1 bg-white/30 rounded-full" />
                     </div>
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious className="right-0 -mr-12 md:-mr-14 bg-card shadow-card btn-press hover:border-primary/30 transition-all duration-200" />
-              <CarouselNext className="left-0 -ml-12 md:-ml-14 bg-card shadow-card btn-press hover:border-primary/30 transition-all duration-200" />
+              <CarouselPrevious className="right-0 -mr-10 md:-mr-12 bg-card shadow-card btn-press hover:border-primary/30 transition-all duration-200" />
+              <CarouselNext className="left-0 -ml-10 md:-ml-12 bg-card shadow-card btn-press hover:border-primary/30 transition-all duration-200" />
             </Carousel>
           </div>
         </div>

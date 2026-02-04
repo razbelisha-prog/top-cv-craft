@@ -40,7 +40,7 @@ const ToolsSection = () => {
   };
 
   return (
-    <section className="py-14 bg-background" dir="rtl">
+    <section className="py-14 bg-secondary/5" dir="rtl">
       <div className="container px-4">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-10">
