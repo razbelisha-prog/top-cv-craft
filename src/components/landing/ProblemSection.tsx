@@ -1,4 +1,4 @@
-import { XCircle } from "lucide-react";
+import { Lightbulb } from "lucide-react";
 
 const problems = [
   "250+ קו״ח נשלחים לכל משרת ג'וניור בתוך 24 שעות",
@@ -26,7 +26,7 @@ const ProblemSection = () => {
                 key={index}
                 className="flex items-center gap-4 p-5 bg-card rounded-xl shadow-card border border-border/50 hover:border-accent/30 transition-all duration-300"
               >
-                <XCircle className="w-6 h-6 text-accent flex-shrink-0" />
+                <Lightbulb className="w-6 h-6 text-primary flex-shrink-0" />
                 <p className="text-lg font-medium text-foreground">{problem}</p>
               </div>
             ))}
