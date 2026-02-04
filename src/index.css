@@ -204,4 +204,24 @@ All colors MUST be HSL.
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
+
+  /* Interactive card hover effect */
+  .card-interactive {
+    @apply transition-all duration-200 ease-out;
+  }
+
+  .card-interactive:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px -10px hsl(252 75% 60% / 0.2);
+  }
+
+  /* Button press effect */
+  .btn-press:active {
+    transform: scale(0.97);
+  }
+
+  /* Subtle separator line */
+  .separator-subtle {
+    @apply w-12 h-0.5 bg-primary/20 mx-auto;
+  }
 }
