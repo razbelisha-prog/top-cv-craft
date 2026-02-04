@@ -1,40 +1,37 @@
-import { FileText, Bot, Search, CheckCircle } from "lucide-react";
+import { FileText, Bot, Search, CheckCircle, Gift, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const mainFeatures = [
   {
-    icon: FileText,
-    title: "קורות חיים ברמת Top 1%",
-    description: "מוכנים לתפקיד מטרה"
-  },
-  {
-    icon: FileText,
-    title: "2 תבניות קו\"ח",
-    description: "עברית ואנגלית"
+    icon: Target,
+    title: "אסטרטגיית קו״ח מנצחת",
+    description: "איך בונים קו״ח שמבדלים אותך מ-99% ממחפשי העבודה"
   },
   {
     icon: Bot,
-    title: "גישה ל־Custom GPTs",
-    description: "ייעודיים לכתיבה ושיפור קו\"ח"
+    title: "מערכת AI חכמה",
+    description: "לבנייה ושיפור קו״ח בצורה מדויקת"
+  },
+  {
+    icon: FileText,
+    title: "2 תבניות קו״ח מעוצבות",
+    description: "ב-Canva וב-Word – בעברית ובאנגלית"
+  },
+  {
+    icon: Bot,
+    title: "גישה ל-Custom GPTs ייעודיים",
+    description: "לכתיבה, שיפור והתאמת קו״ח למשרות"
+  },
+  {
+    icon: Gift,
+    title: "בונוס: אסטרטגיות חיפוש עבודה",
+    description: "לסטודנטים וג'וניורים – איך מוצאים עבודה גם בלי ניסיון"
   },
   {
     icon: Search,
     title: "גישה למערכת ATS חינמית",
-    description: "+ GPT לבדיקת מילות מפתח"
+    description: "+ GPT ייעודי לבדיקת מילות מפתח והתאמה למשרה"
   }
-];
-
-const skills = [
-  "בניית מבנה קו\"ח מנצח",
-  "עיצוב שעובר מגייסים",
-  "שימוש חכם ב־AI (בלי טקסטים גנריים)",
-  "התמודדות עם פרדוקס הניסיון של ג'וניורים",
-  "הבנת חוקי הגיוס בהייטק",
-  "הימנעות מטעויות נפוצות",
-  "בידול בשוק רווי",
-  "עבודה נכונה מול ATS",
-  "התאמת קו\"ח לכל משרה",
-  "הגשת קו\"ח בשיטת 360°"
 ];
 
 const FeaturesSection = () => {
@@ -68,19 +65,6 @@ const FeaturesSection = () => {
             ))}
           </div>
 
-          {/* Skills we'll learn */}
-          <div className="bg-card rounded-2xl p-8 shadow-elevated border border-border/50">
-            <h3 className="text-xl font-bold mb-6 text-center">יכולות שנלמד בסדנה:</h3>
-            <div className="grid md:grid-cols-2 gap-3">
-              {skills.map((skill, index) => (
-                <div key={index} className="flex items-center gap-3 text-foreground">
-                  <CheckCircle className="w-5 h-5 text-success flex-shrink-0" />
-                  <span>{skill}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
           {/* CTA */}
           <div className="text-center mt-10">
             <Button 
@@ -88,7 +72,7 @@ const FeaturesSection = () => {
               size="lg"
               className="gradient-primary text-white font-bold text-lg px-8 py-6 rounded-full shadow-primary hover:scale-105 transition-all duration-300"
             >
-              🟢 נשמע לי רלוונטי – להרשמה
+              תרשום אותי – אני בפנים
             </Button>
           </div>
         </div>

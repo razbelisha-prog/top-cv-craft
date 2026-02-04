@@ -1,6 +1,11 @@
-import { Bot, Brain, Search, Palette, FileText } from "lucide-react";
+import { Bot, Brain, Search, Palette, FileText, Sparkles } from "lucide-react";
 
 const tools = [
+  {
+    icon: Sparkles,
+    name: "עוזר AI אישי לבניית קו״ח",
+    description: "מערכת אישית שבנינו"
+  },
   {
     icon: Bot,
     name: "ChatGPT",
@@ -40,7 +45,7 @@ const ToolsSection = () => {
             <p className="text-lg text-muted-foreground">לא תאוריה – עבודה אמיתית</p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 md:gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
             {tools.map((tool, index) => (
               <div 
                 key={index}
@@ -49,8 +54,8 @@ const ToolsSection = () => {
                 <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:gradient-primary transition-all duration-300">
                   <tool.icon className="w-7 h-7 text-primary group-hover:text-white transition-colors duration-300" />
                 </div>
-                <h3 className="font-bold text-foreground mb-1">{tool.name}</h3>
-                <p className="text-sm text-muted-foreground">{tool.description}</p>
+                <h3 className="font-bold text-foreground mb-1 text-sm">{tool.name}</h3>
+                <p className="text-xs text-muted-foreground">{tool.description}</p>
               </div>
             ))}
           </div>

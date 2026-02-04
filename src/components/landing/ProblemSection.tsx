@@ -1,11 +1,10 @@
 import { XCircle } from "lucide-react";
 
 const problems = [
-  "250+ קו\"ח נשלחים לכל משרת ג'וניור",
-  "משרות פופולריות מגיעות גם ל-500+ קו\"ח",
-  "85% מהקו\"ח לא נקראים ע\"י אדם",
-  "רק 2-4% מהמועמדים מגיעים לראיון",
-  "למגייס יש 5-15 שניות להחליט"
+  "250+ קו״ח נשלחים לכל משרת ג'וניור בתוך 24 שעות",
+  "90% ממחפשי העבודה בונים קו״ח בעזרת AI בלבד",
+  "85% מהקו״ח נפסלים כבר בשלב הסינון האוטומטי (ATS)",
+  "הזמן הממוצע שמגייס.ת מקדיש.ה לקו״ח: 10–15 שניות"
 ];
 
 const ProblemSection = () => {
@@ -13,9 +12,13 @@ const ProblemSection = () => {
     <section className="py-20 bg-secondary/5" dir="rtl">
       <div className="container px-4">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-            למה אנחנו <span className="text-accent">חייבים</span> קו"ח מנצחים?
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
+            למה אנחנו <span className="text-gradient-primary">חייבים</span> קו״ח שונים?
           </h2>
+          
+          <p className="text-lg text-muted-foreground text-center mb-12">
+            ככה זה לחפש עבודה ב־2026:
+          </p>
 
           <div className="grid gap-4 md:gap-6">
             {problems.map((problem, index) => (

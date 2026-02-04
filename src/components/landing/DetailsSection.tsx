@@ -5,7 +5,7 @@ const details = [
   {
     icon: Calendar,
     label: "תאריך",
-    value: "02.02 (יום שני)"
+    value: "26.02 (יום חמישי)"
   },
   {
     icon: Clock,
@@ -50,9 +50,9 @@ const DetailsSection = () => {
               ))}
             </div>
 
-            <div className="flex items-center justify-center gap-2 text-accent font-medium mb-8">
+            <div className="flex items-center justify-center gap-2 text-muted-foreground font-medium mb-8">
               <Users className="w-5 h-5" />
-              <span>⚠️ מספר מקומות מוגבל</span>
+              <span>מוגבל ל־12 משתתפים בלבד</span>
             </div>
 
             <div className="text-center">
@@ -61,7 +61,7 @@ const DetailsSection = () => {
                 size="lg"
                 className="gradient-primary text-white font-bold text-xl px-12 py-8 rounded-full shadow-primary hover:scale-105 transition-all duration-300"
               >
-                🟢 אני נרשם/ת עכשיו
+                אני נרשם/ת עכשיו
               </Button>
             </div>
           </div>

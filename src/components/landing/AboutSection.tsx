@@ -1,10 +1,11 @@
-import { CheckCircle, User } from "lucide-react";
+import { CheckCircle, User, Linkedin } from "lucide-react";
 
 const highlights = [
-  "ניסיון של ~10 שנים בליווי קריירה",
-  "עבודה עם ג'וניורים, מיד וסניורים",
-  "התמחות ב־ATS, AI ו־Recruitment Thinking",
-  "ליווי עד ראיונות – לא רק עד קובץ"
+  "8+ שנות ניסיון בליווי מחפשי עבודה",
+  "יועץ הקריירה הרשמי של צה״ל",
+  "ליווי אישי של 700+ מחפשי עבודה לתפקיד הבא",
+  "הקמת 3X מרכזי קריירה מצליחים עם 1,500+ משתתפים",
+  "מומחה לחיפוש עבודה ו-AI לסטודנטים וג'וניורים בהייטק"
 ];
 
 const AboutSection = () => {
@@ -26,10 +27,10 @@ const AboutSection = () => {
               <div className="flex-1 text-center md:text-right">
                 <h3 className="text-2xl font-bold text-foreground mb-2">רז בלישה</h3>
                 <p className="text-lg text-muted-foreground mb-6">
-                  יועץ קריירה, מלווה מאות מועמדים בשוק ההייטק ומנחה סדנאות קו"ח ולינקדאין עם תוצאות מוכחות.
+                  יועץ קריירה, מלווה מאות מועמדים בשוק ההייטק ומנחה סדנאות קו״ח ולינקדאין עם תוצאות מוכחות.
                 </p>
 
-                <div className="grid sm:grid-cols-2 gap-3">
+                <div className="grid gap-3 mb-6">
                   {highlights.map((highlight, index) => (
                     <div key={index} className="flex items-center gap-2 text-foreground">
                       <CheckCircle className="w-5 h-5 text-success flex-shrink-0" />
@@ -37,6 +38,16 @@ const AboutSection = () => {
                     </div>
                   ))}
                 </div>
+
+                <a 
+                  href="https://www.linkedin.com/in/raz-belisha/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
+                >
+                  <Linkedin className="w-6 h-6" />
+                  <span className="font-medium">הפרופיל שלי בלינקדאין</span>
+                </a>
               </div>
             </div>
           </div>

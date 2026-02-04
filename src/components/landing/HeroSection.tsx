@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Crown, ArrowDown } from "lucide-react";
+import { ArrowDown } from "lucide-react";
 
 const HeroSection = () => {
   const scrollToRegistration = () => {
@@ -16,25 +16,19 @@ const HeroSection = () => {
 
       <div className="container relative z-10 px-4 py-20 text-center">
         <div className="max-w-4xl mx-auto">
-          {/* Crown badge */}
+          {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-8">
-            <Crown className="w-5 h-5 text-gold" />
-            <span className="text-sm font-medium text-foreground">הכנס לעילית מחפשי העבודה</span>
+            <span className="text-sm font-medium text-foreground">סדנת קו״ח מנצחים להייטק</span>
           </div>
 
           {/* Main heading */}
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight">
-            <span className="text-gradient-primary">Top 1%</span>
-            <br />
-            <span className="text-foreground">סדנת קו"ח</span>
-            <br />
-            <span className="text-gradient-primary">CV</span>
-            <span className="inline-block mr-2">👑</span>
+            <span className="text-gradient-primary">Top 1% CV</span>
           </h1>
 
           {/* Subtitle */}
           <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-xl mx-auto leading-relaxed">
-            סדנה מעשית לבניית קו"ח שיציב אותך ב־Top 1% של מחפשי העבודה.
+            סדנה מעשית לבניית קו״ח שישימו אותך ב־Top 1% של מחפשי העבודה.
           </p>
 
           {/* CTA Button */}
@@ -44,10 +38,10 @@ const HeroSection = () => {
               size="lg"
               className="gradient-primary text-white font-bold text-lg px-10 py-7 rounded-full shadow-primary hover:scale-105 transition-all duration-300"
             >
-              ✨ הרשמה לסדנה
+              הרשמה לסדנה
             </Button>
-            <p className="text-sm text-accent font-medium flex items-center gap-2">
-              ⚠️ מספר המשתתפים מוגבל
+            <p className="text-sm text-muted-foreground font-medium">
+              מוגבל ל־12 משתתפים לכל סדנה
             </p>
           </div>
 
