@@ -43,11 +43,11 @@ const FeaturesSection = () => {
   };
 
   return (
-    <section className="py-20 bg-secondary/5" dir="rtl">
+    <section className="py-20 bg-muted/30" dir="rtl">
       <div className="container px-4">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-            מה תקבלו <span className="text-gradient-gold">בסדנה?</span>
+            מה תקבלו <span className="text-gradient-primary">בסדנה?</span>
           </h2>
 
           {/* Main features grid */}
@@ -55,10 +55,10 @@ const FeaturesSection = () => {
             {mainFeatures.map((feature, index) => (
               <div 
                 key={index}
-                className="flex items-start gap-4 p-6 bg-card rounded-xl shadow-card border border-border/50 hover:border-primary/30 hover:shadow-gold transition-all duration-300"
+                className="flex items-start gap-4 p-6 bg-card rounded-xl shadow-card border border-border/50 hover:border-primary/30 hover:shadow-primary transition-all duration-300"
               >
-                <div className="w-12 h-12 rounded-lg gradient-gold flex items-center justify-center flex-shrink-0">
-                  <feature.icon className="w-6 h-6 text-primary-foreground" />
+                <div className="w-12 h-12 rounded-lg gradient-primary flex items-center justify-center flex-shrink-0">
+                  <feature.icon className="w-6 h-6 text-white" />
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-foreground mb-1">{feature.title}</h3>
@@ -86,7 +86,7 @@ const FeaturesSection = () => {
             <Button 
               onClick={scrollToRegistration}
               size="lg"
-              className="gradient-gold text-primary-foreground font-bold text-lg px-8 py-6 rounded-xl shadow-gold hover:scale-105 transition-all duration-300"
+              className="gradient-primary text-white font-bold text-lg px-8 py-6 rounded-full shadow-primary hover:scale-105 transition-all duration-300"
             >
               🟢 נשמע לי רלוונטי – להרשמה
             </Button>

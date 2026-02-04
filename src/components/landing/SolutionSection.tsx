@@ -6,10 +6,10 @@ const SolutionSection = () => {
       <div className="container px-4">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-8">
-            השתתפות בסדנה = <span className="text-gradient-gold">יותר ראיונות עבודה</span>
+            השתתפות בסדנה = <span className="text-gradient-primary">יותר ראיונות עבודה</span>
           </h2>
 
-          <div className="bg-card rounded-2xl p-8 md:p-10 shadow-elevated border border-primary/20">
+            <div className="bg-card rounded-2xl p-8 md:p-10 shadow-elevated border border-primary/20">
             <div className="flex flex-col gap-4 text-right max-w-2xl mx-auto">
               <p className="text-xl md:text-2xl font-bold text-foreground flex items-center gap-3">
                 <CheckCircle className="w-6 h-6 text-success flex-shrink-0" />
