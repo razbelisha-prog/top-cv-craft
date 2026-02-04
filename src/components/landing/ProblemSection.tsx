@@ -12,12 +12,12 @@ const ProblemSection = () => {
     <section className="py-14 bg-secondary/5" dir="rtl">
       <div className="container px-4">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-3">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
             למה אנחנו <span className="text-gradient-primary">חייבים</span> קו״ח שונים?
           </h2>
           
           <p className="text-base text-muted-foreground text-center mb-10">
-            ככה זה לחפש עבודה ב־2026:
+            עובדים, כותבים, משפרים – ויוצאים עם קו״ח מוכנים, חדים, מותאמים לשוק ההייטק, ולסינון אנושי של מגייסות ומערכות ATS.
           </p>
 
           <div className="grid gap-3.5">
