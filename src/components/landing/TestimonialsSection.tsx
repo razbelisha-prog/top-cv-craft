@@ -2,18 +2,29 @@ import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-// Placeholder for 5 WhatsApp-style vertical screenshots
-const testimonialSlots = [1, 2, 3, 4, 5];
+import testimonial1 from "@/assets/testimonial-1.png";
+import testimonial2 from "@/assets/testimonial-2.png";
+import testimonial3 from "@/assets/testimonial-3.png";
+import testimonial4 from "@/assets/testimonial-4.png";
+import testimonial5 from "@/assets/testimonial-5.png";
+
+const testimonialImages = [
+  testimonial1,
+  testimonial2,
+  testimonial3,
+  testimonial4,
+  testimonial5,
+];
 
 const TestimonialsSection = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const nextSlide = () => {
-    setCurrentIndex((prev) => (prev + 1) % testimonialSlots.length);
+    setCurrentIndex((prev) => (prev + 1) % testimonialImages.length);
   };
 
   const prevSlide = () => {
-    setCurrentIndex((prev) => (prev - 1 + testimonialSlots.length) % testimonialSlots.length);
+    setCurrentIndex((prev) => (prev - 1 + testimonialImages.length) % testimonialImages.length);
   };
 
   return (
@@ -21,7 +32,7 @@ const TestimonialsSection = () => {
       <div className="container px-4">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">
-            מה המשתתפים אומרים <span className="text-gradient-primary">אחרי הסדנה?</span>
+            <span className="text-gradient-primary">לקוחות</span> מספרים
           </h2>
 
           {/* Carousel container */}
@@ -49,20 +60,19 @@ const TestimonialsSection = () => {
             <div className="overflow-hidden mx-8 md:mx-12">
               <div 
                 className="flex transition-transform duration-300 ease-out gap-4"
-                style={{ transform: `translateX(${currentIndex * -220}px)` }}
+                style={{ transform: `translateX(${currentIndex * -280}px)` }}
               >
-                {testimonialSlots.map((slot, index) => (
+                {testimonialImages.map((image, index) => (
                   <div 
                     key={index}
-                    className="flex-shrink-0 w-[200px] h-[380px] bg-card rounded-2xl shadow-card border border-border/50 flex items-center justify-center card-interactive"
+                    className="flex-shrink-0 w-[250px] md:w-[270px] rounded-2xl shadow-card border border-border/50 overflow-hidden card-interactive"
+                    style={{ aspectRatio: '1080/1350' }}
                   >
-                    <div className="text-center text-muted-foreground">
-                      <div className="w-14 h-14 mx-auto mb-3 rounded-full bg-muted flex items-center justify-center">
-                        <span className="text-xl">📱</span>
-                      </div>
-                      <p className="text-sm">צילום מסך {slot}</p>
-                      <p className="text-xs mt-1.5">(להעלאת תמונה)</p>
-                    </div>
+                    <img 
+                      src={image} 
+                      alt={`המלצה ${index + 1}`}
+                      className="w-full h-full object-cover object-center"
+                    />
                   </div>
                 ))}
               </div>
@@ -70,7 +80,7 @@ const TestimonialsSection = () => {
 
             {/* Dots indicator */}
             <div className="flex justify-center gap-2 mt-5">
-              {testimonialSlots.map((_, index) => (
+              {testimonialImages.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => setCurrentIndex(index)}
