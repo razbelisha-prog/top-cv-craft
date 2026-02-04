@@ -1,4 +1,5 @@
 import { Bot, Brain, Search, Palette, FileText, Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const tools = [
   {
@@ -34,6 +35,10 @@ const tools = [
 ];
 
 const ToolsSection = () => {
+  const scrollToRegistration = () => {
+    document.getElementById('registration')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <section className="py-14 bg-background" dir="rtl">
       <div className="container px-4">
@@ -58,6 +63,17 @@ const ToolsSection = () => {
                 <p className="text-xs text-muted-foreground">{tool.description}</p>
               </div>
             ))}
+          </div>
+
+          {/* CTA Button */}
+          <div className="text-center mt-8">
+            <Button 
+              onClick={scrollToRegistration}
+              size="lg"
+              className="gradient-primary text-white font-bold text-base px-8 py-6 rounded-full shadow-primary hover:shadow-elevated btn-press transition-all duration-200"
+            >
+              תרשום אותי – אני בפנים
+            </Button>
           </div>
         </div>
       </div>
