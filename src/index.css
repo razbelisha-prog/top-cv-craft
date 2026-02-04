@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -10,70 +10,73 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 220 20% 97%;
-    --foreground: 220 20% 10%;
+    --background: 210 40% 98%;
+    --foreground: 215 25% 17%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 20% 10%;
+    --card-foreground: 215 25% 17%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 10%;
+    --popover-foreground: 215 25% 17%;
 
-    --primary: 45 93% 47%;
-    --primary-foreground: 220 20% 10%;
+    --primary: 231 68% 63%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 60% 35%;
+    --secondary: 249 47% 42%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 220 15% 92%;
-    --muted-foreground: 220 10% 45%;
+    --muted: 215 20% 88%;
+    --muted-foreground: 215 16% 47%;
 
-    --accent: 355 70% 50%;
+    --accent: 0 72% 51%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 15% 88%;
-    --input: 220 15% 88%;
-    --ring: 45 93% 47%;
+    --border: 215 20% 88%;
+    --input: 215 20% 88%;
+    --ring: 231 68% 63%;
 
     --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 220 20% 10%;
-    --sidebar-primary: 45 93% 47%;
-    --sidebar-primary-foreground: 220 20% 10%;
-    --sidebar-accent: 220 15% 92%;
-    --sidebar-accent-foreground: 220 20% 10%;
-    --sidebar-border: 220 15% 88%;
-    --sidebar-ring: 45 93% 47%;
+    --sidebar-foreground: 215 25% 17%;
+    --sidebar-primary: 231 68% 63%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 215 20% 88%;
+    --sidebar-accent-foreground: 215 25% 17%;
+    --sidebar-border: 215 20% 88%;
+    --sidebar-ring: 231 68% 63%;
 
-    --chart-1: 45 93% 47%;
-    --chart-2: 220 60% 35%;
-    --chart-3: 355 70% 50%;
+    --chart-1: 231 68% 63%;
+    --chart-2: 249 47% 42%;
+    --chart-3: 0 72% 51%;
     --chart-4: 160 60% 45%;
     --chart-5: 280 60% 50%;
 
     /* Custom design tokens */
-    --gold: 45 93% 47%;
-    --gold-light: 45 93% 60%;
-    --gold-dark: 45 93% 35%;
-    --navy: 220 60% 25%;
-    --navy-light: 220 60% 35%;
+    --purple-light: 231 68% 63%;
+    --purple-dark: 270 37% 54%;
+    --blue-dark: 224 65% 33%;
+    --blue-medium: 248 56% 42%;
+    --gold: 43 96% 56%;
+    --gold-dark: 37 91% 50%;
     --success: 160 60% 45%;
     
     /* Gradients */
-    --gradient-gold: linear-gradient(135deg, hsl(45 93% 47%), hsl(35 93% 50%));
-    --gradient-hero: linear-gradient(180deg, hsl(220 20% 97%) 0%, hsl(220 25% 94%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(220 15% 98%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(231 68% 63%), hsl(270 37% 54%));
+    --gradient-hero: linear-gradient(135deg, hsl(231 68% 63%) 0%, hsl(270 37% 54%) 100%);
+    --gradient-header: linear-gradient(135deg, hsl(224 65% 33%) 0%, hsl(248 56% 42%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(210 40% 98%) 100%);
+    --gradient-gold: linear-gradient(135deg, hsl(43 96% 56%), hsl(37 91% 50%));
     
     /* Shadows */
-    --shadow-gold: 0 4px 20px -4px hsl(45 93% 47% / 0.4);
-    --shadow-card: 0 4px 30px -8px hsl(220 20% 10% / 0.1);
-    --shadow-elevated: 0 20px 50px -15px hsl(220 20% 10% / 0.15);
+    --shadow-primary: 0 10px 30px -4px hsl(231 68% 63% / 0.4);
+    --shadow-card: 0 4px 30px -8px hsl(215 25% 17% / 0.1);
+    --shadow-elevated: 0 20px 60px -15px hsl(215 25% 17% / 0.2);
 
-    --font-sans: 'Heebo', ui-sans-serif, system-ui, sans-serif;
+    --font-sans: 'Rubik', ui-sans-serif, system-ui, sans-serif;
   }
 
   .dark {
@@ -86,16 +89,16 @@ All colors MUST be HSL.
     --popover: 220 20% 12%;
     --popover-foreground: 220 10% 95%;
 
-    --primary: 45 93% 50%;
+    --primary: 231 68% 66%;
     --primary-foreground: 220 20% 10%;
 
-    --secondary: 220 50% 50%;
+    --secondary: 249 47% 50%;
     --secondary-foreground: 0 0% 100%;
 
     --muted: 220 20% 18%;
     --muted-foreground: 220 10% 60%;
 
-    --accent: 355 70% 55%;
+    --accent: 0 72% 55%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 70% 50%;
@@ -103,37 +106,40 @@ All colors MUST be HSL.
 
     --border: 220 20% 20%;
     --input: 220 20% 20%;
-    --ring: 45 93% 50%;
+    --ring: 231 68% 66%;
 
     --sidebar-background: 220 20% 10%;
     --sidebar-foreground: 220 10% 95%;
-    --sidebar-primary: 45 93% 50%;
+    --sidebar-primary: 231 68% 66%;
     --sidebar-primary-foreground: 220 20% 10%;
     --sidebar-accent: 220 20% 18%;
     --sidebar-accent-foreground: 220 10% 95%;
     --sidebar-border: 220 20% 20%;
-    --sidebar-ring: 45 93% 50%;
+    --sidebar-ring: 231 68% 66%;
 
-    --chart-1: 45 93% 50%;
-    --chart-2: 220 50% 50%;
-    --chart-3: 355 70% 55%;
+    --chart-1: 231 68% 66%;
+    --chart-2: 249 47% 50%;
+    --chart-3: 0 72% 55%;
     --chart-4: 160 60% 50%;
     --chart-5: 280 60% 55%;
 
-    --gold: 45 93% 50%;
-    --gold-light: 45 93% 65%;
-    --gold-dark: 45 93% 40%;
-    --navy: 220 50% 40%;
-    --navy-light: 220 50% 50%;
+    --purple-light: 231 68% 66%;
+    --purple-dark: 270 37% 58%;
+    --blue-dark: 224 65% 40%;
+    --blue-medium: 248 56% 48%;
+    --gold: 43 96% 60%;
+    --gold-dark: 37 91% 55%;
     --success: 160 60% 50%;
 
-    --gradient-gold: linear-gradient(135deg, hsl(45 93% 50%), hsl(35 93% 55%));
-    --gradient-hero: linear-gradient(180deg, hsl(220 20% 8%) 0%, hsl(220 25% 12%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(231 68% 66%), hsl(270 37% 58%));
+    --gradient-hero: linear-gradient(135deg, hsl(231 68% 66%) 0%, hsl(270 37% 58%) 100%);
+    --gradient-header: linear-gradient(135deg, hsl(224 65% 40%) 0%, hsl(248 56% 48%) 100%);
     --gradient-card: linear-gradient(180deg, hsl(220 20% 12%) 0%, hsl(220 20% 14%) 100%);
+    --gradient-gold: linear-gradient(135deg, hsl(43 96% 60%), hsl(37 91% 55%));
 
-    --shadow-gold: 0 4px 20px -4px hsl(45 93% 50% / 0.3);
+    --shadow-primary: 0 10px 30px -4px hsl(231 68% 66% / 0.3);
     --shadow-card: 0 4px 30px -8px hsl(0 0% 0% / 0.3);
-    --shadow-elevated: 0 20px 50px -15px hsl(0 0% 0% / 0.4);
+    --shadow-elevated: 0 20px 60px -15px hsl(0 0% 0% / 0.4);
   }
 }
 
@@ -153,20 +159,28 @@ All colors MUST be HSL.
 }
 
 @layer utilities {
-  .gradient-gold {
-    background: var(--gradient-gold);
+  .gradient-primary {
+    background: var(--gradient-primary);
   }
 
   .gradient-hero {
     background: var(--gradient-hero);
   }
 
+  .gradient-header {
+    background: var(--gradient-header);
+  }
+
   .gradient-card {
     background: var(--gradient-card);
   }
 
-  .shadow-gold {
-    box-shadow: var(--shadow-gold);
+  .gradient-gold {
+    background: var(--gradient-gold);
+  }
+
+  .shadow-primary {
+    box-shadow: var(--shadow-primary);
   }
 
   .shadow-card {
@@ -175,6 +189,13 @@ All colors MUST be HSL.
 
   .shadow-elevated {
     box-shadow: var(--shadow-elevated);
+  }
+
+  .text-gradient-primary {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   .text-gradient-gold {

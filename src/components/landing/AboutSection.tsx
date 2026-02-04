@@ -9,18 +9,18 @@ const highlights = [
 
 const AboutSection = () => {
   return (
-    <section className="py-20 bg-secondary/5" dir="rtl">
+    <section className="py-20 bg-muted/30" dir="rtl">
       <div className="container px-4">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-            מי מעביר את <span className="text-gradient-gold">הסדנה?</span>
+            מי מעביר את <span className="text-gradient-primary">הסדנה?</span>
           </h2>
 
           <div className="bg-card rounded-2xl p-8 md:p-10 shadow-elevated border border-border/50">
             <div className="flex flex-col md:flex-row items-center gap-8">
               {/* Profile image placeholder */}
-              <div className="w-40 h-40 rounded-full gradient-gold flex items-center justify-center shadow-gold flex-shrink-0">
-                <User className="w-20 h-20 text-primary-foreground" />
+              <div className="w-40 h-40 rounded-full gradient-primary flex items-center justify-center shadow-primary flex-shrink-0">
+                <User className="w-20 h-20 text-white" />
               </div>
 
               <div className="flex-1 text-center md:text-right">

@@ -30,19 +30,19 @@ const DetailsSection = () => {
   };
 
   return (
-    <section id="registration" className="py-20 bg-secondary/5" dir="rtl">
+    <section id="registration" className="py-20 bg-muted/30" dir="rtl">
       <div className="container px-4">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-            פרטי <span className="text-gradient-gold">הסדנה</span>
+            פרטי <span className="text-gradient-primary">הסדנה</span>
           </h2>
 
           <div className="bg-card rounded-2xl p-8 md:p-10 shadow-elevated border border-primary/20">
             <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6 mb-8">
               {details.map((detail, index) => (
                 <div key={index} className="text-center">
-                  <div className="w-14 h-14 mx-auto rounded-xl gradient-gold flex items-center justify-center mb-3 shadow-gold">
-                    <detail.icon className="w-7 h-7 text-primary-foreground" />
+                  <div className="w-14 h-14 mx-auto rounded-xl gradient-primary flex items-center justify-center mb-3 shadow-primary">
+                    <detail.icon className="w-7 h-7 text-white" />
                   </div>
                   <p className="text-sm text-muted-foreground mb-1">{detail.label}</p>
                   <p className="text-lg font-bold text-foreground">{detail.value}</p>
@@ -59,7 +59,7 @@ const DetailsSection = () => {
               <Button 
                 onClick={scrollToRegistration}
                 size="lg"
-                className="gradient-gold text-primary-foreground font-bold text-xl px-12 py-8 rounded-xl shadow-gold hover:scale-105 transition-all duration-300"
+                className="gradient-primary text-white font-bold text-xl px-12 py-8 rounded-full shadow-primary hover:scale-105 transition-all duration-300"
               >
                 🟢 אני נרשם/ת עכשיו
               </Button>

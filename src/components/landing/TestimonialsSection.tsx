@@ -29,7 +29,7 @@ const TestimonialsSection = () => {
       <div className="container px-4">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-            מה משתתפים אומרים <span className="text-gradient-gold">אחרי הסדנה?</span>
+            מה משתתפים אומרים <span className="text-gradient-primary">אחרי הסדנה?</span>
           </h2>
 
           <div className="grid md:grid-cols-2 gap-6">
