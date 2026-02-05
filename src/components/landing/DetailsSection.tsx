@@ -1,10 +1,6 @@
-import { useState } from "react";
-import { Calendar, Clock, Monitor, CreditCard, Loader2 } from "lucide-react";
+import { Calendar, Clock, Monitor, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { toast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 
 const workshops = [
   {
@@ -27,96 +23,11 @@ const workshops = [
   }
 ];
 
-interface ParticipantForm {
-  name: string;
-  email: string;
-  phone: string;
-}
-
 const DetailsSection = () => {
-  const [formData, setFormData] = useState<ParticipantForm>({
-    name: "",
-    email: "",
-    phone: ""
-  });
-  const [errors, setErrors] = useState<Partial<ParticipantForm>>({});
-  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const validateForm = (): boolean => {
-    const newErrors: Partial<ParticipantForm> = {};
-
-    if (!formData.name.trim()) {
-      newErrors.name = "נא להזין שם מלא";
-    } else if (formData.name.trim().length < 2) {
-      newErrors.name = "השם חייב להכיל לפחות 2 תווים";
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!formData.email.trim()) {
-      newErrors.email = "נא להזין כתובת אימייל";
-    } else if (!emailRegex.test(formData.email.trim())) {
-      newErrors.email = "כתובת אימייל לא תקינה";
-    }
-
-    if (formData.phone && !/^[\d\-+() ]{7,20}$/.test(formData.phone)) {
-      newErrors.phone = "מספר טלפון לא תקין";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleInputChange = (field: keyof ParticipantForm, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: undefined }));
-    }
-  };
-
-  const handlePayment = async (workshopDate: string) => {
-    if (!validateForm()) {
-      toast({
-        title: "שגיאה בטופס",
-        description: "נא למלא את כל השדות הנדרשים",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      const { data, error } = await supabase.functions.invoke('create-paypal-order', {
-        body: {
-          workshopDate,
-          participantName: formData.name.trim(),
-          participantEmail: formData.email.trim(),
-          participantPhone: formData.phone.trim(),
-          amount: "350.00",
-          currency: "ILS"
-        }
-      });
-
-      if (error) {
-        throw new Error(error.message || 'Failed to create order');
-      }
-
-      if (data?.approvalUrl) {
-        // Redirect to PayPal checkout
-        window.location.href = data.approvalUrl;
-      } else {
-        throw new Error('No approval URL received');
-      }
-    } catch (error) {
-      console.error('Payment error:', error);
-      toast({
-        title: "שגיאה",
-        description: "אירעה שגיאה בעת יצירת ההזמנה. אנא נסה שוב.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsLoading(false);
-    }
+  const handleRegister = (workshopDate: string) => {
+    navigate(`/registration?date=${encodeURIComponent(workshopDate)}`);
   };
 
   return (
@@ -188,87 +99,18 @@ const DetailsSection = () => {
                   </div>
                 </div>
 
-                {/* Registration Form - only for open workshops */}
+                {/* Registration Button - only for open workshops */}
                 {workshop.status === 'open' && (
-                  <div className="space-y-4">
-                    <div className="space-y-3">
-                      <div>
-                        <Label htmlFor={`name-${index}`} className="text-sm text-foreground">
-                          שם מלא *
-                        </Label>
-                        <Input
-                          id={`name-${index}`}
-                          type="text"
-                          placeholder="הזינו את שמכם המלא"
-                          value={formData.name}
-                          onChange={(e) => handleInputChange('name', e.target.value)}
-                          className={errors.name ? 'border-destructive' : ''}
-                          maxLength={100}
-                        />
-                        {errors.name && (
-                          <p className="text-xs text-destructive mt-1">{errors.name}</p>
-                        )}
-                      </div>
-
-                      <div>
-                        <Label htmlFor={`email-${index}`} className="text-sm text-foreground">
-                          אימייל *
-                        </Label>
-                        <Input
-                          id={`email-${index}`}
-                          type="email"
-                          placeholder="your@email.com"
-                          value={formData.email}
-                          onChange={(e) => handleInputChange('email', e.target.value)}
-                          className={errors.email ? 'border-destructive' : ''}
-                          maxLength={255}
-                          dir="ltr"
-                        />
-                        {errors.email && (
-                          <p className="text-xs text-destructive mt-1">{errors.email}</p>
-                        )}
-                      </div>
-
-                      <div>
-                        <Label htmlFor={`phone-${index}`} className="text-sm text-foreground">
-                          טלפון (אופציונלי)
-                        </Label>
-                        <Input
-                          id={`phone-${index}`}
-                          type="tel"
-                          placeholder="050-1234567"
-                          value={formData.phone}
-                          onChange={(e) => handleInputChange('phone', e.target.value)}
-                          className={errors.phone ? 'border-destructive' : ''}
-                          maxLength={20}
-                          dir="ltr"
-                        />
-                        {errors.phone && (
-                          <p className="text-xs text-destructive mt-1">{errors.phone}</p>
-                        )}
-                      </div>
-                    </div>
-
+                  <div className="space-y-3">
                     <Button 
-                      onClick={() => handlePayment(workshop.date)}
-                      disabled={isLoading}
+                      onClick={() => handleRegister(workshop.date)}
                       className="w-full gradient-primary text-white font-bold text-base py-5 rounded-full shadow-primary hover:shadow-elevated btn-press transition-all duration-200"
                     >
-                      {isLoading ? (
-                        <>
-                          <Loader2 className="w-5 h-5 animate-spin ml-2" />
-                          מעבד...
-                        </>
-                      ) : (
-                        <>
-                          <CreditCard className="w-5 h-5 ml-2" />
-                          לתשלום עם PayPal - 350 ₪
-                        </>
-                      )}
+                      להרשמה לסדנה
                     </Button>
 
                     <p className="text-xs text-muted-foreground text-center">
-                      התשלום מאובטח באמצעות PayPal
+                      הרשמה מאובטחת באמצעות PayPal
                     </p>
                   </div>
                 )}
