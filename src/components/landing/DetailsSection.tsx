@@ -1,26 +1,24 @@
-import { Calendar, Clock, Monitor, CreditCard, Users } from "lucide-react";
+import { Calendar, Clock, Monitor, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const details = [
+const workshops = [
   {
-    icon: Calendar,
-    label: "תאריך",
-    value: "26.02 (יום חמישי)"
+    date: "12.02.26",
+    displayDate: "12.02 (יום חמישי)",
+    status: "soldOut",
+    statusText: "Sold Out"
   },
   {
-    icon: Clock,
-    label: "שעה",
-    value: "18:00–21:00"
+    date: "19.02.26",
+    displayDate: "19.02 (יום חמישי)",
+    status: "soldOut",
+    statusText: "Sold Out"
   },
   {
-    icon: Monitor,
-    label: "מיקום",
-    value: "ZOOM"
-  },
-  {
-    icon: CreditCard,
-    label: "מחיר",
-    value: "350 ₪"
+    date: "26.02.26",
+    displayDate: "26.02 (יום חמישי)",
+    status: "open",
+    statusText: "פתוח להרשמה"
   }
 ];
 
@@ -32,38 +30,89 @@ const DetailsSection = () => {
   return (
     <section id="registration" className="py-14 bg-muted/30" dir="rtl">
       <div className="container px-4">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-10">
-            פרטי <span className="text-gradient-primary">הסדנה</span>
+            <span className="text-gradient-primary">הסדנאות</span> הבאות
           </h2>
 
-          <div className="bg-card rounded-2xl p-7 md:p-9 shadow-elevated border border-primary/20">
-            <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-5 mb-6">
-              {details.map((detail, index) => (
-                <div key={index} className="text-center group">
-                  <div className="w-12 h-12 mx-auto rounded-xl gradient-primary flex items-center justify-center mb-2.5 shadow-primary group-hover:scale-105 transition-transform duration-200">
-                    <detail.icon className="w-6 h-6 text-white" />
-                  </div>
-                  <p className="text-xs text-muted-foreground mb-0.5">{detail.label}</p>
-                  <p className="text-base font-bold text-foreground">{detail.value}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="flex items-center justify-center gap-2 text-muted-foreground text-sm font-medium mb-6">
-              <Users className="w-4 h-4" />
-              <span>מוגבל ל־12 משתתפים בלבד</span>
-            </div>
-
-            <div className="text-center">
-              <Button 
-                onClick={scrollToRegistration}
-                size="lg"
-                className="gradient-primary text-white font-bold text-lg px-10 py-7 rounded-full shadow-primary hover:shadow-elevated btn-press transition-all duration-200"
+          <div className="grid md:grid-cols-3 gap-6">
+            {workshops.map((workshop, index) => (
+              <div 
+                key={index} 
+                className={`bg-card rounded-2xl p-5 shadow-card border ${
+                  workshop.status === 'open' 
+                    ? 'border-primary/30 shadow-elevated' 
+                    : 'border-border/50 opacity-75'
+                }`}
               >
-                אני נרשם/ת עכשיו
-              </Button>
-            </div>
+                {/* Workshop Header */}
+                <div className="text-center mb-5">
+                  <p className="text-lg font-bold text-foreground mb-1">{workshop.date}</p>
+                  <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
+                    workshop.status === 'open'
+                      ? 'bg-primary/10 text-primary'
+                      : 'bg-muted text-muted-foreground'
+                  }`}>
+                    {workshop.statusText}
+                  </span>
+                </div>
+
+                {/* 2x2 Grid */}
+                <div className="grid grid-cols-2 gap-3 mb-5">
+                  {/* תאריך */}
+                  <div className="bg-muted/50 rounded-xl p-3 text-center">
+                    <div className="w-10 h-10 mx-auto rounded-lg gradient-primary flex items-center justify-center mb-2 shadow-primary">
+                      <Calendar className="w-5 h-5 text-white" />
+                    </div>
+                    <p className="text-xs text-muted-foreground mb-0.5">תאריך</p>
+                    <p className="text-sm font-bold text-foreground">{workshop.displayDate}</p>
+                  </div>
+
+                  {/* שעה */}
+                  <div className="bg-muted/50 rounded-xl p-3 text-center">
+                    <div className="w-10 h-10 mx-auto rounded-lg gradient-primary flex items-center justify-center mb-2 shadow-primary">
+                      <Clock className="w-5 h-5 text-white" />
+                    </div>
+                    <p className="text-xs text-muted-foreground mb-0.5">שעה</p>
+                    <p className="text-sm font-bold text-foreground">18:00 – 21:30</p>
+                  </div>
+
+                  {/* מיקום */}
+                  <div className="bg-muted/50 rounded-xl p-3 text-center">
+                    <div className="w-10 h-10 mx-auto rounded-lg gradient-primary flex items-center justify-center mb-2 shadow-primary">
+                      <Monitor className="w-5 h-5 text-white" />
+                    </div>
+                    <p className="text-xs text-muted-foreground mb-0.5">מיקום</p>
+                    <p className="text-sm font-bold text-foreground">Zoom</p>
+                  </div>
+
+                  {/* מחיר */}
+                  <div className="bg-muted/50 rounded-xl p-3 text-center">
+                    <div className="w-10 h-10 mx-auto rounded-lg gradient-primary flex items-center justify-center mb-2 shadow-primary">
+                      <CreditCard className="w-5 h-5 text-white" />
+                    </div>
+                    <p className="text-xs text-muted-foreground mb-0.5">מחיר</p>
+                    <p className="text-sm font-bold text-foreground">350 ₪</p>
+                  </div>
+                </div>
+
+                {/* CTA Button - only for open workshops */}
+                {workshop.status === 'open' && (
+                  <Button 
+                    onClick={scrollToRegistration}
+                    className="w-full gradient-primary text-white font-bold text-base py-5 rounded-full shadow-primary hover:shadow-elevated btn-press transition-all duration-200"
+                  >
+                    אני נרשם/ת עכשיו
+                  </Button>
+                )}
+
+                {workshop.status === 'soldOut' && (
+                  <div className="text-center py-3 bg-muted/30 rounded-full text-muted-foreground font-medium">
+                    אזלו המקומות
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         </div>
       </div>
