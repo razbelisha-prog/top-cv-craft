@@ -1,66 +1,38 @@
 
-## תוכנית: תשלום בכרטיס אשראי ישיר (PayPal Card Fields) ✅ הושלם
+## תוכנית: תהליך תשלום דו-שלבי עם כרטיס אשראי + PayBox ✅ הושלם
 
 ### מה נבנה
-נוספה אפשרות לתשלום בכרטיס אשראי ישירות באתר, ללא הפניה ל-PayPal UI.
+תהליך הרשמה ותשלום פשוט בשני שלבים:
+1. **שלב 1 - פרטים**: מילוי פרטי משתתף (שם, אימייל, מספר משתתפים)
+2. **שלב 2 - תשלום**: סיכום הזמנה + בחירת אמצעי תשלום
 
-### ארכיטקטורה
+### אמצעי תשלום
+
+| אמצעי | תיאור | סוג |
+|-------|--------|-----|
+| **כרטיס אשראי** | תשלום מאובטח באמצעות PayPal (ללא צורך בחשבון) | פנימי |
+| **PayBox** | תשלום חיצוני דרך קישור PayBox | Redirect חיצוני |
+
+### זרימה
 
 ```
-Frontend                    Backend (Edge Functions)           PayPal API
-   │                              │                               │
-   │ 1. loadSDK()                 │                               │
-   ├─────────────────────────────►│ get-paypal-client-token       │
-   │                              ├──────────────────────────────►│
-   │                              │◄──────────────────────────────┤
-   │◄─────────────────────────────┤ clientToken + clientId        │
-   │                              │                               │
-   │ 2. Load SDK with token       │                               │
-   │                              │                               │
-   │ 3. CardFields.createOrder()  │                               │
-   ├─────────────────────────────►│ create-paypal-order           │
-   │                              ├──────────────────────────────►│
-   │◄─────────────────────────────┤ orderId                       │
-   │                              │                               │
-   │ 4. SDK handles card input    │                               │
-   │    (Tokenization in browser) │                               │
-   │                              │                               │
-   │ 5. CardFields.submit()       │                               │
-   │    (via SDK → PayPal)        ├──────────────────────────────►│
-   │                              │◄──────────────────────────────┤
-   │◄──────────── onApprove ──────┤                               │
-   │                              │                               │
-   │ 6. Capture payment           │                               │
-   ├─────────────────────────────►│ process-card-payment          │
-   │                              ├──────────────────────────────►│
-   │◄─────────────────────────────┤ success                       │
+שלב 1: פרטים
+    │
+    ▼
+שלב 2: תשלום
+    ├── כרטיס אשראי → שדות PayPal Card Fields
+    └── PayBox → Redirect ל-links.payboxapp.com
 ```
-
-### Edge Functions
-
-| Function | Purpose |
-|----------|---------|
-| `get-paypal-client-token` | מחזיר Client Token ו-Client ID לטעינת ה-SDK |
-| `create-paypal-order` | יוצר הזמנה ב-PayPal ומחזיר Order ID |
-| `process-card-payment` | לוכד את התשלום לאחר אישור הכרטיס |
 
 ### קבצים
 
 | File | Purpose |
 |------|---------|
-| `src/hooks/usePayPalCardFields.ts` | Hook לניהול ה-SDK ושדות הכרטיס |
-| `src/components/payment/CardPaymentFields.tsx` | רכיב UI עם שדות התשלום המאובטחים |
-| `src/pages/Registration.tsx` | שילוב בזרימת ההרשמה |
+| `src/pages/Registration.tsx` | דף הרשמה ראשי עם 2 שלבים |
+| `src/components/payment/CardPaymentFields.tsx` | שדות כרטיס אשראי מאובטחים |
+| `src/hooks/usePayPalCardFields.ts` | Hook לניהול PayPal SDK |
+| `src/assets/paybox-logo.png` | לוגו PayBox |
 
-### דרישות מוקדמות
-
-לפני השימוש, יש לוודא שבחשבון PayPal:
-1. מופעל "Advanced Credit and Debit Card Payments"
-2. החשבון הוא Business (לא Personal)
-3. המדינה תומכת באפשרות זו
-
-### הערה חשובה
-
-אם PayPal Card Fields לא זמין (בגלל מגבלות אזוריות), המערכת תציג הודעה מתאימה ותאפשר למשתמש לחזור ולבחור תשלום דרך PayPal Checkout.
-
-
+### הערות
+- PayPal Card Fields עובד רק במדינות נתמכות (לא ישראל) - במידה ולא זמין, יוצג הודעה מתאימה
+- PayBox הוא קישור תשלום חיצוני - אין אינטגרציה עם API
