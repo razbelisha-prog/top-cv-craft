@@ -14,12 +14,14 @@ const PRICE_PER_PERSON = 350;
 interface FormData {
   name: string;
   email: string;
+  phone: string;
   participants: number;
 }
 
 interface FormErrors {
   name?: string;
   email?: string;
+  phone?: string;
   participants?: string;
 }
 
@@ -32,6 +34,7 @@ const Registration = () => {
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
+    phone: "",
     participants: 1
   });
   const [errors, setErrors] = useState<FormErrors>({});
@@ -52,6 +55,13 @@ const Registration = () => {
       newErrors.email = "נא להזין כתובת אימייל";
     } else if (!emailRegex.test(formData.email.trim())) {
       newErrors.email = "כתובת אימייל לא תקינה";
+    }
+
+    const phoneRegex = /^[\d\-+\s()]{9,15}$/;
+    if (!formData.phone.trim()) {
+      newErrors.phone = "נא להזין מספר טלפון";
+    } else if (!phoneRegex.test(formData.phone.trim())) {
+      newErrors.phone = "מספר טלפון לא תקין";
     }
 
     if (formData.participants < 1 || formData.participants > 10) {
@@ -77,8 +87,8 @@ const Registration = () => {
 
   const handlePaymentMethodContinue = () => {
     if (paymentMethod === 'paybox') {
-      // Redirect to PayBox external link
-      window.location.href = 'https://links.payboxapp.com/z6Yvrsrcx0b';
+      // Redirect to PayBox external link - exact URL, no modifications
+      window.location.href = 'https://links.payboxapp.com/z6Yvrszcx0b';
     } else {
       setStep("card-payment");
     }
@@ -175,6 +185,25 @@ const Registration = () => {
                 />
                 {errors.email && (
                   <p className="text-xs text-destructive mt-1">{errors.email}</p>
+                )}
+              </div>
+
+              <div>
+                <Label htmlFor="phone" className="text-sm text-foreground">
+                  מספר טלפון *
+                </Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  placeholder="050-1234567"
+                  value={formData.phone}
+                  onChange={(e) => handleInputChange("phone", e.target.value)}
+                  className={errors.phone ? "border-destructive" : ""}
+                  maxLength={15}
+                  dir="ltr"
+                />
+                {errors.phone && (
+                  <p className="text-xs text-destructive mt-1">{errors.phone}</p>
                 )}
               </div>
 
@@ -338,7 +367,7 @@ const Registration = () => {
               workshopDate={workshopDate}
               participantName={formData.name.trim()}
               participantEmail={formData.email.trim()}
-              participantPhone=""
+              participantPhone={formData.phone.trim()}
               amount={totalPrice.toFixed(2)}
               currency="ILS"
               participants={formData.participants}
