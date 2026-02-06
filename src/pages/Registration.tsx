@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import CardPaymentFields from "@/components/payment/CardPaymentFields";
 
 const PRICE_PER_PERSON = 350;
 
@@ -27,7 +28,7 @@ const Registration = () => {
   const navigate = useNavigate();
   const workshopDate = searchParams.get("date") || "";
   
-  const [step, setStep] = useState<"form" | "summary" | "payment">("form");
+  const [step, setStep] = useState<"form" | "summary" | "payment" | "card-payment">("form");
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
@@ -75,7 +76,11 @@ const Registration = () => {
   };
 
   const handleContinueToPayment = () => {
-    setStep("payment");
+    if (paymentMethod === 'credit') {
+      setStep("card-payment");
+    } else {
+      setStep("payment");
+    }
   };
 
   const handlePayment = async () => {
@@ -347,11 +352,11 @@ const Registration = () => {
           </div>
         )}
 
-        {/* Payment Step */}
+        {/* Payment Step - PayPal Redirect */}
         {step === "payment" && (
           <div className="bg-card rounded-2xl p-6 shadow-card border border-border">
             <h2 className="text-lg font-bold mb-4 text-foreground">
-              {paymentMethod === "credit" ? "תשלום בכרטיס אשראי" : "תשלום באמצעות PayPal"}
+              תשלום באמצעות PayPal
             </h2>
             
             <div className="bg-muted/50 rounded-lg p-3 mb-6">
@@ -360,12 +365,6 @@ const Registration = () => {
                 <span className="text-xl font-bold text-primary">{totalPrice} ₪</span>
               </div>
             </div>
-
-            {paymentMethod === "credit" && (
-              <p className="text-sm text-muted-foreground mb-4 text-center">
-                תועבר לדף תשלום מאובטח של PayPal להזנת פרטי כרטיס האשראי
-              </p>
-            )}
 
             <div className="flex gap-3">
               <Button
@@ -387,15 +386,51 @@ const Registration = () => {
                     מעבד...
                   </>
                 ) : (
-                  <>
-                    {paymentMethod === "credit" ? (
-                      <CreditCard className="w-5 h-5 ml-2" />
-                    ) : null}
-                    לתשלום {totalPrice} ₪
-                  </>
+                  <>לתשלום {totalPrice} ₪</>
                 )}
               </Button>
             </div>
+          </div>
+        )}
+
+        {/* Card Payment Step - Direct Card Fields */}
+        {step === "card-payment" && (
+          <div className="bg-card rounded-2xl p-6 shadow-card border border-border">
+            <h2 className="text-lg font-bold mb-4 text-foreground">
+              תשלום בכרטיס אשראי
+            </h2>
+            
+            <div className="bg-muted/50 rounded-lg p-3 mb-6">
+              <div className="flex justify-between items-center">
+                <span className="text-muted-foreground">סה״כ לתשלום</span>
+                <span className="text-xl font-bold text-primary">{totalPrice} ₪</span>
+              </div>
+            </div>
+
+            <CardPaymentFields
+              workshopDate={workshopDate}
+              participantName={formData.name.trim()}
+              participantEmail={formData.email.trim()}
+              participantPhone=""
+              amount={totalPrice.toFixed(2)}
+              currency="ILS"
+              participants={formData.participants}
+              onSuccess={(orderId) => {
+                toast({
+                  title: "התשלום בוצע בהצלחה!",
+                  description: `מספר הזמנה: ${orderId}`,
+                });
+                navigate("/payment-success");
+              }}
+              onError={(error) => {
+                toast({
+                  title: "שגיאה בתשלום",
+                  description: error,
+                  variant: "destructive",
+                });
+              }}
+              onBack={() => setStep("summary")}
+            />
           </div>
         )}
 

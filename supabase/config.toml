@@ -5,3 +5,9 @@ verify_jwt = false
 
 [functions.capture-paypal-order]
 verify_jwt = false
+
+[functions.get-paypal-client-token]
+verify_jwt = false
+
+[functions.process-card-payment]
+verify_jwt = false
