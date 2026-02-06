@@ -1,53 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import type { CardFieldsInstance } from '@/types/paypal';
+import '@/types/paypal';
 
 interface PayPalCardFieldsOptions {
   onApprove: (orderId: string) => void;
   onError: (error: string) => void;
-}
-
-interface CardFieldsInstance {
-  isEligible: () => boolean;
-  NumberField: (options: { placeholder: string }) => { render: (selector: string) => Promise<void> };
-  ExpiryField: (options: { placeholder: string }) => { render: (selector: string) => Promise<void> };
-  CVVField: (options: { placeholder: string }) => { render: (selector: string) => Promise<void> };
-  NameField: (options: { placeholder: string }) => { render: (selector: string) => Promise<void> };
-  submit: () => Promise<{ liabilityShift?: string }>;
-  getState: () => { isFormValid: boolean };
-}
-
-interface PayPalButtonsConfig {
-  fundingSource?: string;
-  style?: {
-    layout?: string;
-    color?: string;
-    shape?: string;
-    label?: string;
-    height?: number;
-  };
-  createOrder: () => Promise<string>;
-  onApprove: (data: { orderID: string }) => Promise<void>;
-  onError: (err: Error) => void;
-  onCancel: () => void;
-}
-
-interface PayPalButtonsInstance {
-  render: (container: string | HTMLElement) => Promise<void>;
-  close: () => void;
-}
-
-declare global {
-  interface Window {
-    paypal?: {
-      CardFields: (options: {
-        createOrder: () => Promise<string>;
-        onApprove: (data: { orderID: string }) => void;
-        onError: (err: Error) => void;
-        style?: Record<string, unknown>;
-      }) => CardFieldsInstance;
-      Buttons: (config: PayPalButtonsConfig) => PayPalButtonsInstance;
-    };
-  }
 }
 
 export function usePayPalCardFields({ onApprove, onError }: PayPalCardFieldsOptions) {
