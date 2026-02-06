@@ -16,6 +16,26 @@ interface CardFieldsInstance {
   getState: () => { isFormValid: boolean };
 }
 
+interface PayPalButtonsConfig {
+  fundingSource?: string;
+  style?: {
+    layout?: string;
+    color?: string;
+    shape?: string;
+    label?: string;
+    height?: number;
+  };
+  createOrder: () => Promise<string>;
+  onApprove: (data: { orderID: string }) => Promise<void>;
+  onError: (err: Error) => void;
+  onCancel: () => void;
+}
+
+interface PayPalButtonsInstance {
+  render: (container: string | HTMLElement) => Promise<void>;
+  close: () => void;
+}
+
 declare global {
   interface Window {
     paypal?: {
@@ -25,6 +45,7 @@ declare global {
         onError: (err: Error) => void;
         style?: Record<string, unknown>;
       }) => CardFieldsInstance;
+      Buttons: (config: PayPalButtonsConfig) => PayPalButtonsInstance;
     };
   }
 }

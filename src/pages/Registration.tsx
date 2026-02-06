@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "@/hooks/use-toast";
 import CardPaymentFields from "@/components/payment/CardPaymentFields";
+import PayPalSmartButtons from "@/components/payment/PayPalSmartButtons";
 import payboxLogo from "@/assets/paybox-logo.png";
 
 const PRICE_PER_PERSON = 350;
@@ -30,7 +31,7 @@ const Registration = () => {
   const navigate = useNavigate();
   const workshopDate = searchParams.get("date") || "";
   
-  const [step, setStep] = useState<"form" | "payment" | "card-payment">("form");
+  const [step, setStep] = useState<"form" | "payment" | "paypal-payment" | "card-payment">("form");
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
@@ -38,7 +39,7 @@ const Registration = () => {
     participants: 1
   });
   const [errors, setErrors] = useState<FormErrors>({});
-  const [paymentMethod, setPaymentMethod] = useState<"credit" | "paybox">("credit");
+  const [paymentMethod, setPaymentMethod] = useState<"paypal" | "credit" | "paybox">("paypal");
   // isLoading state removed - no longer needed with new 2-step flow
 
   const validateForm = (): boolean => {
@@ -89,6 +90,8 @@ const Registration = () => {
     if (paymentMethod === 'paybox') {
       // Redirect to PayBox external link - exact URL, no modifications
       window.location.href = 'https://links.payboxapp.com/z6Yvrszcx0b';
+    } else if (paymentMethod === 'paypal') {
+      setStep("paypal-payment");
     } else {
       setStep("card-payment");
     }
@@ -283,9 +286,29 @@ const Registration = () => {
             <h3 className="text-md font-bold mb-3 text-foreground">בחירת אמצעי תשלום</h3>
             <RadioGroup
               value={paymentMethod}
-              onValueChange={(value) => setPaymentMethod(value as "credit" | "paybox")}
+              onValueChange={(value) => setPaymentMethod(value as "paypal" | "credit" | "paybox")}
               className="space-y-3 mb-6"
             >
+              {/* PayPal Smart Buttons Option - Default */}
+              <div className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                paymentMethod === "paypal" 
+                  ? "border-primary bg-primary/5" 
+                  : "border-border hover:border-primary/50"
+              }`}>
+                <RadioGroupItem value="paypal" id="paypal" />
+                <Label htmlFor="paypal" className="flex items-center gap-3 cursor-pointer flex-1">
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center overflow-hidden bg-[#003087]">
+                    <svg viewBox="0 0 24 24" className="w-6 h-6" fill="white">
+                      <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944 3.72a.636.636 0 0 1 .628-.537h6.012c2.41 0 4.156.725 5.186 2.154.878 1.218 1.093 2.7.658 4.528-.04.166-.086.339-.137.519-.485 1.71-1.422 3.065-2.788 4.028-1.338.944-2.99 1.422-4.91 1.422H7.95a.636.636 0 0 0-.628.537l-.246 1.604v.003zm12.578-13.05c-.015.088-.033.177-.053.268-.644 3.29-2.875 4.942-6.63 4.942H11.15a.778.778 0 0 0-.768.656l-.782 4.945-.22 1.396a.41.41 0 0 0 .405.475h2.846a.636.636 0 0 0 .628-.537l.26-1.64.016-.107a.636.636 0 0 1 .628-.537h.396c2.56 0 4.562-.983 5.475-3.827.382-1.19.464-2.172.167-2.866-.295-.687-.91-1.16-1.847-1.168z"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="font-bold text-foreground">PayPal או כרטיס אשראי</p>
+                    <p className="text-xs text-muted-foreground">תשלום מאובטח דרך PayPal</p>
+                  </div>
+                </Label>
+              </div>
+
               {/* Credit Card Option */}
               <div className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${
                 paymentMethod === "credit" 
@@ -342,10 +365,51 @@ const Registration = () => {
                     המשך לתשלום ב-PayBox
                   </>
                 ) : (
-                  <>לתשלום {totalPrice} ₪</>
+                  <>המשך לתשלום {totalPrice} ₪</>
                 )}
               </Button>
             </div>
+          </div>
+        )}
+
+        {/* PayPal Smart Buttons Step */}
+        {step === "paypal-payment" && (
+          <div className="bg-card rounded-2xl p-6 shadow-card border border-border">
+            <h2 className="text-lg font-bold mb-4 text-foreground">
+              תשלום באמצעות PayPal
+            </h2>
+            
+            <div className="bg-muted/50 rounded-lg p-3 mb-6">
+              <div className="flex justify-between items-center">
+                <span className="text-muted-foreground">סה״כ לתשלום</span>
+                <span className="text-xl font-bold text-primary">{totalPrice} ₪</span>
+              </div>
+            </div>
+
+            <PayPalSmartButtons
+              workshopDate={workshopDate}
+              participantName={formData.name.trim()}
+              participantEmail={formData.email.trim()}
+              participantPhone={formData.phone.trim()}
+              amount={totalPrice.toFixed(2)}
+              currency="ILS"
+              participants={formData.participants}
+              onSuccess={(orderId) => {
+                toast({
+                  title: "התשלום בוצע בהצלחה!",
+                  description: `מספר הזמנה: ${orderId}`,
+                });
+                navigate("/payment-success");
+              }}
+              onError={(error) => {
+                toast({
+                  title: "שגיאה בתשלום",
+                  description: error,
+                  variant: "destructive",
+                });
+              }}
+              onBack={() => setStep("payment")}
+            />
           </div>
         )}
 
