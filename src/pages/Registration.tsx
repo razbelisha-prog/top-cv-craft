@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "@/hooks/use-toast";
 import CardPaymentFields from "@/components/payment/CardPaymentFields";
+import PayPalSmartButtons from "@/components/payment/PayPalSmartButtons";
 import payboxLogo from "@/assets/paybox-logo.png";
 
 const PRICE_PER_PERSON = 350;
@@ -30,7 +31,7 @@ const Registration = () => {
   const navigate = useNavigate();
   const workshopDate = searchParams.get("date") || "";
   
-  const [step, setStep] = useState<"form" | "payment" | "card-payment">("form");
+  const [step, setStep] = useState<"form" | "payment" | "credit-payment" | "card-payment">("form");
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
@@ -89,8 +90,9 @@ const Registration = () => {
     if (paymentMethod === 'paybox') {
       // Redirect to PayBox external link - exact URL, no modifications
       window.location.href = 'https://links.payboxapp.com/z6Yvrszcx0b';
-    } else {
-      setStep("card-payment");
+    } else if (paymentMethod === 'credit') {
+      // כרטיס אשראי דרך PayPal Smart Buttons (מאפשר גם PayPal וגם כרטיס אשראי)
+      setStep("credit-payment");
     }
   };
 
@@ -349,11 +351,11 @@ const Registration = () => {
           </div>
         )}
 
-        {/* Card Payment Step - Direct Card Fields */}
-        {step === "card-payment" && (
+        {/* Credit Card Payment Step - PayPal Smart Buttons (מאפשר PayPal + כרטיס אשראי) */}
+        {step === "credit-payment" && (
           <div className="bg-card rounded-2xl p-6 shadow-card border border-border">
             <h2 className="text-lg font-bold mb-4 text-foreground">
-              תשלום בכרטיס אשראי
+              תשלום בכרטיס אשראי או PayPal
             </h2>
             
             <div className="bg-muted/50 rounded-lg p-3 mb-6">
@@ -363,14 +365,15 @@ const Registration = () => {
               </div>
             </div>
 
-            <CardPaymentFields
+            <PayPalSmartButtons
+              amount={totalPrice.toFixed(2)}
+              currency="ILS"
               workshopDate={workshopDate}
               participantName={formData.name.trim()}
               participantEmail={formData.email.trim()}
               participantPhone={formData.phone.trim()}
-              amount={totalPrice.toFixed(2)}
-              currency="ILS"
               participants={formData.participants}
+              allowCreditCard={true}
               onSuccess={(orderId) => {
                 toast({
                   title: "התשלום בוצע בהצלחה!",
