@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import CardPaymentFields from "@/components/payment/CardPaymentFields";
 
 const PRICE_PER_PERSON = 350;
 
@@ -27,7 +28,7 @@ const Registration = () => {
   const navigate = useNavigate();
   const workshopDate = searchParams.get("date") || "";
   
-  const [step, setStep] = useState<"form" | "summary" | "payment">("form");
+  const [step, setStep] = useState<"form" | "summary" | "payment" | "card-payment">("form");
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
@@ -75,7 +76,11 @@ const Registration = () => {
   };
 
   const handleContinueToPayment = () => {
-    setStep("payment");
+    if (paymentMethod === 'credit') {
+      setStep("card-payment");
+    } else {
+      setStep("payment");
+    }
   };
 
   const handlePayment = async () => {
@@ -287,29 +292,8 @@ const Registration = () => {
               </div>
             </div>
 
-            <div className="flex gap-3">
-              <Button
-                variant="outline"
-                onClick={() => setStep("form")}
-                className="flex-1"
-              >
-                חזרה
-              </Button>
-              <Button
-                onClick={handleContinueToPayment}
-                className="flex-1 gradient-primary text-white font-bold rounded-full shadow-primary hover:shadow-elevated btn-press transition-all duration-200"
-              >
-                המשך לתשלום
-              </Button>
-            </div>
-          </div>
-        )}
-
-        {/* Payment Step */}
-        {step === "payment" && (
-          <div className="bg-card rounded-2xl p-6 shadow-card border border-border">
-            <h2 className="text-lg font-bold mb-4 text-foreground">בחירת אמצעי תשלום</h2>
-            
+            {/* Payment Method Selection */}
+            <h3 className="text-md font-bold mb-3 text-foreground">בחירת אמצעי תשלום</h3>
             <RadioGroup
               value={paymentMethod}
               onValueChange={(value) => setPaymentMethod(value as "paypal" | "credit")}
@@ -344,12 +328,35 @@ const Registration = () => {
                   </div>
                   <div>
                     <p className="font-bold text-foreground">כרטיס אשראי</p>
-                    <p className="text-xs text-muted-foreground">תשלום באמצעות כרטיס אשראי דרך PayPal</p>
+                    <p className="text-xs text-muted-foreground">תשלום ישיר בכרטיס אשראי</p>
                   </div>
                 </Label>
               </div>
             </RadioGroup>
 
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                onClick={() => setStep("form")}
+                className="flex-1"
+              >
+                חזרה
+              </Button>
+              <Button
+                onClick={handleContinueToPayment}
+                className="flex-1 gradient-primary text-white font-bold rounded-full shadow-primary hover:shadow-elevated btn-press transition-all duration-200"
+              >
+                המשך לתשלום
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Payment Step - PayPal */}
+        {step === "payment" && (
+          <div className="bg-card rounded-2xl p-6 shadow-card border border-border">
+            <h2 className="text-lg font-bold mb-4 text-foreground">תשלום באמצעות PayPal</h2>
+            
             <div className="bg-muted/50 rounded-lg p-3 mb-6">
               <div className="flex justify-between items-center">
                 <span className="text-muted-foreground">סה״כ לתשלום</span>
@@ -383,6 +390,38 @@ const Registration = () => {
                 )}
               </Button>
             </div>
+          </div>
+        )}
+
+        {/* Card Payment Step */}
+        {step === "card-payment" && (
+          <div className="bg-card rounded-2xl p-6 shadow-card border border-border">
+            <h2 className="text-lg font-bold mb-4 text-foreground">תשלום בכרטיס אשראי</h2>
+            
+            <CardPaymentFields
+              workshopDate={workshopDate}
+              participantName={formData.name.trim()}
+              participantEmail={formData.email.trim()}
+              participantPhone=""
+              amount={totalPrice.toFixed(2)}
+              currency="ILS"
+              participants={formData.participants}
+              onSuccess={(orderId) => {
+                toast({
+                  title: "התשלום בוצע בהצלחה!",
+                  description: `מספר הזמנה: ${orderId}`,
+                });
+                navigate("/payment-success");
+              }}
+              onError={(error) => {
+                toast({
+                  title: "שגיאה בתשלום",
+                  description: error,
+                  variant: "destructive",
+                });
+              }}
+              onBack={() => setStep("summary")}
+            />
           </div>
         )}
 
