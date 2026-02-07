@@ -10,7 +10,7 @@ import CardPaymentFields from "@/components/payment/CardPaymentFields";
 import PayPalSmartButtons from "@/components/payment/PayPalSmartButtons";
 import payboxLogo from "@/assets/paybox-logo.png";
 
-const PRICE_PER_PERSON = 350;
+const PRICE_PER_PERSON = 1;
 
 interface FormData {
   name: string;
