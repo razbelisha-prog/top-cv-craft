@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { Shield, Users, CreditCard, ArrowRight, Loader2, MessageCircle, ExternalLink } from "lucide-react";
+import { Shield, Users, CreditCard, ArrowRight, MessageCircle, ExternalLink, CheckCircle, PartyPopper } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,6 +9,13 @@ import { toast } from "@/hooks/use-toast";
 import CardPaymentFields from "@/components/payment/CardPaymentFields";
 import PayPalSmartButtons from "@/components/payment/PayPalSmartButtons";
 import payboxLogo from "@/assets/paybox-logo.png";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 const PRICE_PER_PERSON = 1;
 
@@ -40,7 +47,7 @@ const Registration = () => {
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [paymentMethod, setPaymentMethod] = useState<"credit" | "paybox">("credit");
-  // isLoading state removed - no longer needed with new 2-step flow
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
@@ -374,12 +381,8 @@ const Registration = () => {
               participantPhone={formData.phone.trim()}
               participants={formData.participants}
               allowCreditCard={true}
-              onSuccess={(orderId) => {
-                toast({
-                  title: "התשלום בוצע בהצלחה!",
-                  description: `מספר הזמנה: ${orderId}`,
-                });
-                navigate("/payment-success");
+              onSuccess={() => {
+                setShowSuccessModal(true);
               }}
               onError={(error) => {
                 toast({
@@ -403,6 +406,39 @@ const Registration = () => {
           <MessageCircle className="w-5 h-5" />
           <span className="text-sm font-medium hidden sm:inline">לשאלות נוספות על הסדנה</span>
         </a>
+
+        {/* Success Modal */}
+        <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
+          <DialogContent className="sm:max-w-md text-center" dir="rtl">
+            <DialogHeader className="space-y-4">
+              <div className="flex justify-center">
+                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                  <CheckCircle className="w-10 h-10 text-primary" />
+                </div>
+              </div>
+              <DialogTitle className="text-xl font-bold text-foreground flex items-center justify-center gap-2">
+                <PartyPopper className="w-6 h-6 text-primary" />
+                תודה! ההרשמה שלך לסדנה הושלמה בהצלחה
+              </DialogTitle>
+              <DialogDescription className="text-base text-muted-foreground leading-relaxed">
+                התשלום בוצע בהצלחה, ומקומך בסדנה נשמר.
+                <br />
+                אנו ניצור איתך קשר בהקדם עם כל הפרטים וההנחיות לקראת הסדנה.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="mt-4">
+              <Button
+                onClick={() => {
+                  setShowSuccessModal(false);
+                  navigate("/");
+                }}
+                className="w-full gradient-primary text-white font-bold rounded-full"
+              >
+                חזרה לדף הראשי
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
