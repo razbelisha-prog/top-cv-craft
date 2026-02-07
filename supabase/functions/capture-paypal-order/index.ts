@@ -12,20 +12,39 @@ serve(async (req) => {
   }
 
   try {
-    const PAYPAL_CLIENT_ID = Deno.env.get('PAYPAL_CLIENT_ID');
-    const PAYPAL_SECRET_KEY = Deno.env.get('PAYPAL_SECRET_KEY');
-
-    if (!PAYPAL_CLIENT_ID || !PAYPAL_SECRET_KEY) {
-      throw new Error('PayPal credentials not configured');
-    }
-
-    const { orderId } = await req.json();
+    const { orderId, paypalDetails } = await req.json();
 
     if (!orderId) {
       return new Response(
         JSON.stringify({ error: 'Missing orderId' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
+    }
+
+    // If paypalDetails is provided, the order was already captured client-side
+    // Just validate and return success
+    if (paypalDetails && paypalDetails.status === 'COMPLETED') {
+      console.log('Order already captured successfully:', orderId);
+      
+      const captureInfo = paypalDetails.purchase_units?.[0]?.payments?.captures?.[0];
+      
+      return new Response(
+        JSON.stringify({
+          status: paypalDetails.status,
+          transactionId: captureInfo?.id,
+          payerEmail: paypalDetails.payer?.email_address,
+          alreadyCaptured: true,
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // If no paypalDetails, attempt server-side capture (fallback)
+    const PAYPAL_CLIENT_ID = Deno.env.get('PAYPAL_CLIENT_ID');
+    const PAYPAL_SECRET_KEY = Deno.env.get('PAYPAL_SECRET_KEY');
+
+    if (!PAYPAL_CLIENT_ID || !PAYPAL_SECRET_KEY) {
+      throw new Error('PayPal credentials not configured');
     }
 
     // Get PayPal access token
@@ -56,9 +75,24 @@ serve(async (req) => {
       },
     });
 
+    // Handle already captured orders gracefully
     if (!captureResponse.ok) {
-      const errorText = await captureResponse.text();
-      console.error('PayPal capture error:', errorText);
+      const errorData = await captureResponse.json();
+      
+      // If order was already captured, treat as success
+      if (errorData.details?.[0]?.issue === 'ORDER_ALREADY_CAPTURED') {
+        console.log('Order was already captured:', orderId);
+        return new Response(
+          JSON.stringify({
+            status: 'COMPLETED',
+            transactionId: orderId,
+            alreadyCaptured: true,
+          }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+      
+      console.error('PayPal capture error:', JSON.stringify(errorData));
       throw new Error('Failed to capture PayPal order');
     }
 
