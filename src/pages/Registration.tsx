@@ -382,6 +382,7 @@ const Registration = () => {
               participants={formData.participants}
               allowCreditCard={true}
               onSuccess={() => {
+                setStep("form"); // Hide payment buttons
                 setShowSuccessModal(true);
               }}
               onError={(error) => {
@@ -409,7 +410,7 @@ const Registration = () => {
 
         {/* Success Modal */}
         <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
-          <DialogContent className="sm:max-w-md text-center" dir="rtl">
+          <DialogContent className="sm:max-w-md" dir="rtl">
             <DialogHeader className="space-y-4">
               <div className="flex justify-center">
                 <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
@@ -420,7 +421,7 @@ const Registration = () => {
                 <PartyPopper className="w-6 h-6 text-primary" />
                 תודה! ההרשמה שלך לסדנה הושלמה בהצלחה
               </DialogTitle>
-              <DialogDescription className="text-base text-muted-foreground leading-relaxed">
+              <DialogDescription className="text-base text-muted-foreground leading-relaxed text-right">
                 התשלום בוצע בהצלחה, ומקומך בסדנה נשמר.
                 <br />
                 אנו ניצור איתך קשר בהקדם עם כל הפרטים וההנחיות לקראת הסדנה.
