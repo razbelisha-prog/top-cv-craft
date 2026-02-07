@@ -17,7 +17,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 
-const PRICE_PER_PERSON = 1;
+const PRICE_PER_PERSON = 350;
 
 interface FormData {
   name: string;
