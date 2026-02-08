@@ -4,8 +4,8 @@ import { Button } from "@/components/ui/button";
 const mainFeatures = [
   {
     icon: Target,
-    title: "אסטרטגיית קו״ח מנצחת",
-    description: "איך בונים קו״ח שמבדלים אותך מ-99% ממחפשי העבודה"
+    title: "קורות חיים כתובים ומעוצבים",
+    description: "יוצאים מהסדנה עם קובץ קו״ח כתוב, מעוצב ומוכן לשליחה"
   },
   {
     icon: Bot,
@@ -23,14 +23,14 @@ const mainFeatures = [
     description: "לכתיבה, שיפור והתאמת קו״ח למשרות"
   },
   {
-    icon: Gift,
-    title: "בונוס: אסטרטגיות חיפוש עבודה",
-    description: "לסטודנטים וג'וניורים – איך מוצאים עבודה גם בלי ניסיון"
-  },
-  {
     icon: Search,
     title: "גישה למערכת ATS חינמית",
     description: "+ GPT ייעודי לבדיקת מילות מפתח והתאמה למשרה"
+  },
+  {
+    icon: Gift,
+    title: "אסטרטגיות חיפוש עבודה לג'וניורים",
+    description: "משרות מתחת לרדאר, פרדוקס הג'וניור ובידול בשוק תחרותי"
   }
 ];
 
