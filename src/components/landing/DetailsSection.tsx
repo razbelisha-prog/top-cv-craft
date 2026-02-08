@@ -16,8 +16,8 @@ const workshops = [
     statusText: "Sold Out"
   },
   {
-    date: "26.02.26",
-    displayDate: "26.02 (יום חמישי)",
+    date: "05.03.26",
+    displayDate: "05.03 (יום חמישי)",
     status: "open",
     statusText: "פתוח להרשמה"
   }
