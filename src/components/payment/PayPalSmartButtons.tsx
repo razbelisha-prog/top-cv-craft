@@ -158,6 +158,13 @@ const PayPalSmartButtons = ({
               body: {
                 orderId: data.orderID,
                 paypalDetails: details,
+                participantName,
+                participantEmail,
+                participantPhone,
+                participants,
+                workshopDate,
+                amount,
+                currency,
               },
             });
 
