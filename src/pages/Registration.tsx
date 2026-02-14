@@ -9,6 +9,7 @@ import { toast } from "@/hooks/use-toast";
 import CardPaymentFields from "@/components/payment/CardPaymentFields";
 import PayPalSmartButtons from "@/components/payment/PayPalSmartButtons";
 import payboxLogo from "@/assets/paybox-logo.png";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Dialog,
   DialogContent,
@@ -87,8 +88,25 @@ const Registration = () => {
     }
   };
 
-  const handleContinueToPayment = () => {
+  const handleContinueToPayment = async () => {
     if (validateForm()) {
+      // Save registration data with pending status
+      try {
+        const { data, error } = await supabase.functions.invoke('save-registration', {
+          body: {
+            participantName: formData.name.trim(),
+            participantEmail: formData.email.trim(),
+            participantPhone: formData.phone.trim(),
+            participantsCount: formData.participants,
+            workshopDate: workshopDate,
+          },
+        });
+        if (error) {
+          console.error('Error saving registration:', error);
+        }
+      } catch (err) {
+        console.error('Failed to save registration:', err);
+      }
       setStep("payment");
     }
   };
