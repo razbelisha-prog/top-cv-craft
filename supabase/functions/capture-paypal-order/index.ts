@@ -1,18 +1,51 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+async function saveRegistration(
+  supabase: any,
+  data: {
+    participantName: string;
+    participantEmail: string;
+    participantPhone?: string;
+    participantsCount: number;
+    workshopDate: string;
+    amountPaid: string;
+    currency: string;
+    paypalOrderId: string;
+    paymentStatus: string;
+  }
+) {
+  const { error } = await supabase.from('registrations').upsert({
+    participant_name: data.participantName,
+    participant_email: data.participantEmail,
+    participant_phone: data.participantPhone || '',
+    participants_count: data.participantsCount || 1,
+    workshop_date: data.workshopDate,
+    amount_paid: parseFloat(data.amountPaid) || 0,
+    currency: data.currency || 'ILS',
+    paypal_order_id: data.paypalOrderId,
+    payment_status: data.paymentStatus,
+  }, { onConflict: 'paypal_order_id' });
+
+  if (error) {
+    console.error('Error saving registration:', error);
+  } else {
+    console.log('Registration saved successfully for:', data.participantEmail);
+  }
+}
+
 serve(async (req) => {
-  // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { orderId, paypalDetails } = await req.json();
+    const { orderId, paypalDetails, participantName, participantEmail, participantPhone, participants, workshopDate, amount, currency } = await req.json();
 
     if (!orderId) {
       return new Response(
@@ -21,12 +54,30 @@ serve(async (req) => {
       );
     }
 
+    // Create Supabase client with service role to bypass RLS
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+    );
+
     // If paypalDetails is provided, the order was already captured client-side
-    // Just validate and return success
     if (paypalDetails && paypalDetails.status === 'COMPLETED') {
       console.log('Order already captured successfully:', orderId);
       
       const captureInfo = paypalDetails.purchase_units?.[0]?.payments?.captures?.[0];
+
+      // Save registration to database
+      await saveRegistration(supabase, {
+        participantName: participantName || '',
+        participantEmail: participantEmail || paypalDetails.payer?.email_address || '',
+        participantPhone: participantPhone || '',
+        participantsCount: participants || 1,
+        workshopDate: workshopDate || '',
+        amountPaid: amount || captureInfo?.amount?.value || '0',
+        currency: currency || 'ILS',
+        paypalOrderId: orderId,
+        paymentStatus: 'completed',
+      });
       
       return new Response(
         JSON.stringify({
@@ -47,7 +98,6 @@ serve(async (req) => {
       throw new Error('PayPal credentials not configured');
     }
 
-    // Get PayPal access token
     const authResponse = await fetch('https://api-m.paypal.com/v1/oauth2/token', {
       method: 'POST',
       headers: {
@@ -66,7 +116,6 @@ serve(async (req) => {
     const authData = await authResponse.json();
     const accessToken = authData.access_token;
 
-    // Capture the order
     const captureResponse = await fetch(`https://api-m.paypal.com/v2/checkout/orders/${orderId}/capture`, {
       method: 'POST',
       headers: {
@@ -75,13 +124,24 @@ serve(async (req) => {
       },
     });
 
-    // Handle already captured orders gracefully
     if (!captureResponse.ok) {
       const errorData = await captureResponse.json();
       
-      // If order was already captured, treat as success
       if (errorData.details?.[0]?.issue === 'ORDER_ALREADY_CAPTURED') {
         console.log('Order was already captured:', orderId);
+
+        await saveRegistration(supabase, {
+          participantName: participantName || '',
+          participantEmail: participantEmail || '',
+          participantPhone: participantPhone || '',
+          participantsCount: participants || 1,
+          workshopDate: workshopDate || '',
+          amountPaid: amount || '0',
+          currency: currency || 'ILS',
+          paypalOrderId: orderId,
+          paymentStatus: 'completed',
+        });
+
         return new Response(
           JSON.stringify({
             status: 'COMPLETED',
@@ -97,6 +157,19 @@ serve(async (req) => {
     }
 
     const captureData = await captureResponse.json();
+
+    // Save registration
+    await saveRegistration(supabase, {
+      participantName: participantName || '',
+      participantEmail: participantEmail || captureData.payer?.email_address || '',
+      participantPhone: participantPhone || '',
+      participantsCount: participants || 1,
+      workshopDate: workshopDate || '',
+      amountPaid: amount || captureData.purchase_units?.[0]?.payments?.captures?.[0]?.amount?.value || '0',
+      currency: currency || 'ILS',
+      paypalOrderId: orderId,
+      paymentStatus: 'completed',
+    });
 
     return new Response(
       JSON.stringify({
