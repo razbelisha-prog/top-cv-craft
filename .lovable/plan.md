@@ -1,38 +1,26 @@
 
+על מנת לאפשר לך להתחבר למערכת הניהול עם הפרטים שסיפקת, עלינו לבצע מספר פעולות מאחורי הקלעים, שכן כרגע המשתמש עדיין לא קיים במערכת האימות (Auth) ואין לו הרשאות אדמין.
 
-# תיקון פרטי PayPal - Client ID
+הנה התוכנית לביצוע:
 
-## הבעיה שזוהתה
+### שלב 1: יצירת משתמש האדמין
+מכיוון שאין כרגע דף "הרשמה" באתר (וזה טוב, כי אנחנו לא רוצים שכל אחד יוכל להירשם כאדמין), אני אצור פונקציית שרת זמנית (Edge Function) שתבצע את הרישום עבורך בצורה מאובטחת:
+1. הפונקציה תשתמש ב-Service Role Key (מפתח בעל הרשאות גבוהות) כדי ליצור את המשתמש `Razbelisha@gmail.com` עם הסיסמה שביקשת.
+2. הפונקציה תגדיר את המשתמש כ"מאושר" (Confirmed) באופן אוטומטי כדי שלא תצטרך לאמת את המייל.
 
-ה-PayPal Client ID בקובץ `index.html` שונה מהערך שסיפקת. יש טעויות קטנות באותיות:
+### שלב 2: הקצאת תפקיד אדמין
+לאחר יצירת המשתמש, הפונקציה תוסיף רשומה לטבלת ה-`user_roles` שקישרנו למשתמש החדש, עם התפקיד `admin`. זה מה שיאפשר לך לעבור את בדיקת ההרשאות בדף הניהול.
 
-| מיקום | ערך נוכחי | ערך נכון |
-|-------|-----------|----------|
-| index.html | `Adqk6iO**I**DqJPdQ6U2IA1CF5kdTcyZOwa6A_RaVXCAObHqZ_6mQ2aFUz3IEreq-qPRthEog1bGj7LS**I**SK` | `Adqk6iO**l**DqJPdQ6U2IA1CF5kdTcyZOwa6A_RaVXCAObHqZ_6mQ2aFUz3IEreq-qPRthEog1bGj7LS**i**SK` |
+### שלב 3: בדיקה וניקיון
+1. אני אפרוס ואריץ את הפונקציה פעם אחת.
+2. לאחר שהרישום יצליח, אמחוק את הקוד הזמני כדי לשמור על אבטחת המערכת.
+3. אשלח לך הודעה שניתן להתחבר.
 
-שני הבדלים עיקריים:
-- האות `I` (גדולה) צריכה להיות `l` (L קטנה) במיקום אחד
-- האות `I` (גדולה) צריכה להיות `i` (קטנה) במיקום נוסף
+### פרטים טכניים למפתחים (Technical Details)
+- יצירת Edge Function בשם `setup-admin-user`.
+- שימוש ב-`auth.admin.createUser` מה-SDK של Supabase.
+- הכנסת רשומה לטבלת `user_roles` עם ה-UUID שנוצר.
+- הרצת הפונקציה באמצעות כלי ה-CURL המובנה שלי.
+- מחיקת הקבצים הזמניים של הפונקציה לאחר מכן.
 
-## שלבי התיקון
-
-### שלב 1: עדכון Client ID בקובץ index.html
-עדכון שורה 9 עם ה-Client ID הנכון:
-```html
-<script src="https://www.paypal.com/sdk/js?client-id=Adqk6iOlDqJPdQ6U2IA1CF5kdTcyZOwa6A_RaVXCAObHqZ_6mQ2aFUz3IEreq-qPRthEog1bGj7LSiSK&currency=ILS&enable-funding=card,venmo&disable-funding=paylater"></script>
-```
-
-### שלב 2: עדכון Secrets ב-Backend
-יש לוודא שהסודות מעודכנים עם הערכים הנכונים:
-- `PAYPAL_CLIENT_ID` = `Adqk6iOlDqJPdQ6U2IA1CF5kdTcyZOwa6A_RaVXCAObHqZ_6mQ2aFUz3IEreq-qPRthEog1bGj7LSiSK`
-- `PAYPAL_SECRET_KEY` = `EA5LQva5cIoGYzBi6KmwMevL_L8e6QJFvwDXEHVe_ZCSzhQ5WfZwsefSNvOnvfUs1BOKiceinKVse0yV`
-
-## קובץ שיושפע
-
-| פעולה | קובץ |
-|-------|------|
-| עדכון | `index.html` |
-
-## פעולות נוספות נדרשות
-לאחר אישור התוכנית, אבקש ממך לעדכן גם את הסודות עם הערכים הנכונים דרך כלי ה-secrets.
-
+לאחר אישור התוכנית, אוכל לבצע זאת תוך מספר שניות ותוכל להיכנס לכתובת `/admin/registrations` ולהתחבר.
