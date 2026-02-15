@@ -41,7 +41,10 @@ const AdminRegistrations = () => {
 
   // Check if user is already logged in and is admin
   useEffect(() => {
+    let mounted = true;
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (!mounted) return;
       if (session?.user) {
         await checkAdminRole(session.user.id);
       } else {
@@ -51,6 +54,7 @@ const AdminRegistrations = () => {
     });
 
     supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (!mounted) return;
       if (session?.user) {
         await checkAdminRole(session.user.id);
       } else {
@@ -58,7 +62,10 @@ const AdminRegistrations = () => {
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const checkAdminRole = async (userId: string) => {
