@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Loader2, Download, LogOut, Shield } from "lucide-react";
+import { Loader2, Download, LogOut, Shield, Pencil, Check, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 interface Registration {
@@ -36,6 +36,8 @@ const AdminRegistrations = () => {
   const [password, setPassword] = useState("");
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [filterDate, setFilterDate] = useState("");
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editData, setEditData] = useState<Partial<Registration>>({});
 
   // Check if user is already logged in and is admin
   useEffect(() => {
@@ -131,6 +133,52 @@ const AdminRegistrations = () => {
     setRegistrations((data as Registration[]) || []);
   };
 
+  const startEditing = (reg: Registration) => {
+    setEditingId(reg.id);
+    setEditData({
+      participant_name: reg.participant_name,
+      participant_email: reg.participant_email,
+      participant_phone: reg.participant_phone || "",
+      participants_count: reg.participants_count,
+      workshop_date: reg.workshop_date,
+    });
+  };
+
+  const cancelEditing = () => {
+    setEditingId(null);
+    setEditData({});
+  };
+
+  const saveEditing = async () => {
+    if (!editingId) return;
+
+    const { error } = await supabase
+      .from("registrations")
+      .update({
+        participant_name: editData.participant_name,
+        participant_email: editData.participant_email,
+        participant_phone: editData.participant_phone,
+        participants_count: editData.participants_count,
+        workshop_date: editData.workshop_date,
+      })
+      .eq("id", editingId);
+
+    if (error) {
+      console.error("Error updating registration:", error);
+      toast({
+        title: "שגיאה",
+        description: "לא ניתן לעדכן את הפרטים",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    toast({ title: "עודכן בהצלחה" });
+    setEditingId(null);
+    setEditData({});
+    await fetchRegistrations();
+  };
+
   const filteredRegistrations = filterDate
     ? registrations.filter((r) => r.workshop_date.includes(filterDate))
     : registrations;
@@ -146,15 +194,8 @@ const AdminRegistrations = () => {
 
   const exportCSV = () => {
     const headers = [
-      "שם",
-      "אימייל",
-      "טלפון",
-      "משתתפים",
-      "תאריך סדנה",
-      "סכום",
-      "מזהה PayPal",
-      "סטטוס",
-      "תאריך הרשמה",
+      "שם", "אימייל", "טלפון", "משתתפים", "תאריך סדנה",
+      "סכום", "מזהה PayPal", "סטטוס", "תאריך הרשמה",
     ];
     const rows = filteredRegistrations.map((r) => [
       r.participant_name,
@@ -305,13 +346,14 @@ const AdminRegistrations = () => {
                 <TableHead className="text-right">סכום</TableHead>
                 <TableHead className="text-right">סטטוס</TableHead>
                 <TableHead className="text-right">תאריך הרשמה</TableHead>
+                <TableHead className="text-right">פעולות</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredRegistrations.length === 0 ? (
                 <TableRow>
                   <TableCell
-                    colSpan={8}
+                    colSpan={9}
                     className="text-center text-muted-foreground py-8"
                   >
                     אין הרשמות עדיין
@@ -321,16 +363,30 @@ const AdminRegistrations = () => {
                 filteredRegistrations.map((reg) => (
                   <TableRow key={reg.id}>
                     <TableCell className="font-medium">
-                      {reg.participant_name}
+                      {editingId === reg.id ? (
+                        <Input value={editData.participant_name || ""} onChange={(e) => setEditData({ ...editData, participant_name: e.target.value })} className="h-8 w-32" />
+                      ) : reg.participant_name}
                     </TableCell>
                     <TableCell dir="ltr" className="text-right">
-                      {reg.participant_email}
+                      {editingId === reg.id ? (
+                        <Input value={editData.participant_email || ""} onChange={(e) => setEditData({ ...editData, participant_email: e.target.value })} className="h-8 w-44" dir="ltr" />
+                      ) : reg.participant_email}
                     </TableCell>
                     <TableCell dir="ltr" className="text-right">
-                      {reg.participant_phone || "-"}
+                      {editingId === reg.id ? (
+                        <Input value={editData.participant_phone || ""} onChange={(e) => setEditData({ ...editData, participant_phone: e.target.value })} className="h-8 w-28" dir="ltr" />
+                      ) : reg.participant_phone || "-"}
                     </TableCell>
-                    <TableCell>{reg.participants_count}</TableCell>
-                    <TableCell>{reg.workshop_date}</TableCell>
+                    <TableCell>
+                      {editingId === reg.id ? (
+                        <Input type="number" value={editData.participants_count || 1} onChange={(e) => setEditData({ ...editData, participants_count: parseInt(e.target.value) || 1 })} className="h-8 w-16" />
+                      ) : reg.participants_count}
+                    </TableCell>
+                    <TableCell>
+                      {editingId === reg.id ? (
+                        <Input value={editData.workshop_date || ""} onChange={(e) => setEditData({ ...editData, workshop_date: e.target.value })} className="h-8 w-24" />
+                      ) : reg.workshop_date}
+                    </TableCell>
                     <TableCell>
                       ₪{Number(reg.amount_paid).toLocaleString()}
                     </TableCell>
@@ -341,6 +397,22 @@ const AdminRegistrations = () => {
                     </TableCell>
                     <TableCell>
                       {new Date(reg.created_at).toLocaleDateString("he-IL")}
+                    </TableCell>
+                    <TableCell>
+                      {editingId === reg.id ? (
+                        <div className="flex gap-1">
+                          <Button variant="ghost" size="icon" onClick={saveEditing} className="h-8 w-8">
+                            <Check className="w-4 h-4 text-primary" />
+                          </Button>
+                          <Button variant="ghost" size="icon" onClick={cancelEditing} className="h-8 w-8">
+                            <X className="w-4 h-4 text-destructive" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <Button variant="ghost" size="icon" onClick={() => startEditing(reg)} className="h-8 w-8">
+                          <Pencil className="w-4 h-4" />
+                        </Button>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))
