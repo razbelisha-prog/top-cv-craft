@@ -1,28 +1,30 @@
 
 
-## ייבוא נתוני נרשמים מ-PayPal למערכת
+## תיקון שמירת מספר טלפון ושם בהרשמות
 
-מהתמונה שהעלית, אני רואה 3 נרשמים ששילמו דרך PayPal:
-1. **ליאן אבו אלהיג'א** - 12/02/2026, 17:56
-2. **Nasr Assi** - 11/02/2026, 15:32
-3. **רותם גרוסמן** - 10/02/2026, 15:43
+### הבעיה
+1. שני הרשומות הקיימות (sharon.carmeli, hazar.zoabi97) נוצרו **לפני** שהוספנו את הפונקציה `save-registration`, ולכן אין להן שם, טלפון או פרטים נוספים - רק מה ש-PayPal מחזיר (אימייל וסכום).
+2. גם עם התיקון האחרון, יש באג: הרשומה ב-`save-registration` נשמרת עם `paypal_order_id` זמני (למשל `pending-123-email`), אבל כש-`capture-paypal-order` רץ, הוא עושה upsert עם מזהה PayPal אמיתי אחר - ולכן הוא **יוצר רשומה חדשה** במקום לעדכן את הקיימת. כך הטלפון הולך לאיבוד.
 
-### מה נעשה
+### הפתרון
 
-אצור פונקציית שרת זמנית בשם `import-paypal-transactions` שתתחבר ל-PayPal API, תשלוף את כל העסקאות האחרונות (כולל שם, אימייל, טלפון, סכום, מטבע), ותשמור אותן בטבלת ה-registrations.
+#### 1. תיקון `capture-paypal-order` - עדכון לפי אימייל במקום upsert
+במקום upsert לפי `paypal_order_id`, הפונקציה תחפש רשומה קיימת בסטטוס `pending` עם אותו אימייל, תעדכן אותה עם מזהה PayPal אמיתי וסטטוס `completed`, ותשמור על הנתונים שכבר קיימים (כולל טלפון).
 
-### שלבים:
-1. **יצירת Edge Function** - `import-paypal-transactions` שתבצע:
-   - חיבור ל-PayPal Transactions API (`/v1/reporting/transactions`) עם טווח תאריכים מ-10/02 עד היום
-   - שליפת כל פרטי העסקה: שם משלם, אימייל, טלפון, סכום, מטבע, מזהה עסקה
-   - שמירת כל עסקה מוצלחת בטבלת `registrations` (עם upsert לפי `paypal_order_id` כדי למנוע כפילויות)
-2. **הרצת הפונקציה** פעם אחת לייבוא הנתונים
-3. **מחיקת הפונקציה** לאחר ההרצה (שמירה על אבטחה)
-4. **רענון דף האדמין** - הנתונים יופיעו בטבלה
+#### 2. עדכון ידני של 2 הרשומות הקיימות
+מכיוון ששתי ההרשמות הקיימות נוצרו לפני התיקון, אני אצטרך לייבא את השמות והטלפונים שלהם. כדי לעשות זאת, אשתמש בנתונים מ-PayPal (שם) ואבקש ממך את מספרי הטלפון אם הם זמינים לך, או אשאיר אותם ריקים.
 
 ### פרטים טכניים
-- שימוש ב-PayPal Reporting/Transactions API עם ה-credentials הקיימים (`PAYPAL_CLIENT_ID`, `PAYPAL_SECRET_KEY`)
-- Endpoint: `GET /v1/reporting/transactions` עם `start_date` ו-`end_date`
-- שמירה באמצעות Supabase Service Role Key (עקיפת RLS)
-- שדות שיישלפו: `payer_info.payer_name`, `payer_info.email_address`, `payer_info.phone`, `transaction_amount`, `transaction_id`
+
+**שינויים ב-`supabase/functions/capture-paypal-order/index.ts`:**
+- בפונקציית `saveRegistration`: במקום `upsert` עם `onConflict: 'paypal_order_id'`, לבצע:
+  1. חיפוש רשומה קיימת בסטטוס `pending` עם אותו `participant_email`
+  2. אם נמצאה - עדכון (`UPDATE`) עם הסטטוס החדש, סכום, ומזהה PayPal
+  3. אם לא נמצאה - יצירת רשומה חדשה (`INSERT`)
+- זה מבטיח שנתוני הטלפון שנשמרו ב-`save-registration` לא יאבדו
+
+**עדכון נתונים קיימים:**
+- עדכון שם המשתתפת `sharon.carmeli@gmail.com` מנתוני PayPal
+- עדכון שם המשתתפת `hazar.zoabi97@hotmail.com` מנתוני PayPal
+- אם יש לך את מספרי הטלפון שלהן, אעדכן גם אותם
 
