@@ -41,29 +41,27 @@ const AdminRegistrations = () => {
 
   // Check if user is already logged in and is admin
   useEffect(() => {
-    let mounted = true;
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (!mounted) return;
+    // Set up auth listener first - INITIAL_SESSION event handles initial check
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log("Auth event:", event, session?.user?.email);
       if (session?.user) {
-        await checkAdminRole(session.user.id);
+        // Use setTimeout to avoid Supabase auth deadlock
+        setTimeout(() => {
+          checkAdminRole(session.user.id);
+        }, 0);
       } else {
         setIsAuthenticated(false);
         setIsLoading(false);
       }
     });
 
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (!mounted) return;
-      if (session?.user) {
-        await checkAdminRole(session.user.id);
-      } else {
-        setIsLoading(false);
-      }
-    });
+    // Fallback timeout in case auth never fires
+    const timeout = setTimeout(() => {
+      setIsLoading(false);
+    }, 5000);
 
     return () => {
-      mounted = false;
+      clearTimeout(timeout);
       subscription.unsubscribe();
     };
   }, []);
