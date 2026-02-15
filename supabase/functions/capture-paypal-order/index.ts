@@ -20,22 +20,56 @@ async function saveRegistration(
     paymentStatus: string;
   }
 ) {
-  const { error } = await supabase.from('registrations').upsert({
-    participant_name: data.participantName,
-    participant_email: data.participantEmail,
-    participant_phone: data.participantPhone || '',
-    participants_count: data.participantsCount || 1,
-    workshop_date: data.workshopDate,
-    amount_paid: parseFloat(data.amountPaid) || 0,
-    currency: data.currency || 'ILS',
-    paypal_order_id: data.paypalOrderId,
-    payment_status: data.paymentStatus,
-  }, { onConflict: 'paypal_order_id' });
+  // First, try to find an existing pending registration by email
+  const { data: existingRows, error: fetchError } = await supabase
+    .from('registrations')
+    .select('id')
+    .eq('participant_email', data.participantEmail)
+    .eq('payment_status', 'pending')
+    .order('created_at', { ascending: false })
+    .limit(1);
 
-  if (error) {
-    console.error('Error saving registration:', error);
+  if (fetchError) {
+    console.error('Error fetching existing registration:', fetchError);
+  }
+
+  if (existingRows && existingRows.length > 0) {
+    // Update the existing pending record — preserve phone/name that were already saved
+    const { error } = await supabase
+      .from('registrations')
+      .update({
+        paypal_order_id: data.paypalOrderId,
+        payment_status: data.paymentStatus,
+        amount_paid: parseFloat(data.amountPaid) || 0,
+        currency: data.currency || 'ILS',
+        workshop_date: data.workshopDate || undefined,
+      })
+      .eq('id', existingRows[0].id);
+
+    if (error) {
+      console.error('Error updating registration:', error);
+    } else {
+      console.log('Updated existing pending registration for:', data.participantEmail);
+    }
   } else {
-    console.log('Registration saved successfully for:', data.participantEmail);
+    // No pending record found — insert a new one
+    const { error } = await supabase.from('registrations').upsert({
+      participant_name: data.participantName,
+      participant_email: data.participantEmail,
+      participant_phone: data.participantPhone || '',
+      participants_count: data.participantsCount || 1,
+      workshop_date: data.workshopDate,
+      amount_paid: parseFloat(data.amountPaid) || 0,
+      currency: data.currency || 'ILS',
+      paypal_order_id: data.paypalOrderId,
+      payment_status: data.paymentStatus,
+    }, { onConflict: 'paypal_order_id' });
+
+    if (error) {
+      console.error('Error saving registration:', error);
+    } else {
+      console.log('Created new registration for:', data.participantEmail);
+    }
   }
 }
 
