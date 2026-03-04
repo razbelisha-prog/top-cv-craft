@@ -113,8 +113,12 @@ const Registration = () => {
 
   const handlePaymentMethodContinue = () => {
     if (paymentMethod === 'paybox') {
-      // Redirect to PayBox external link - exact URL, no modifications
-      window.location.href = 'https://links.payboxapp.com/z6Yvrszcx0b';
+      // Redirect to PayBox external link based on workshop date
+      const payboxLinks: Record<string, string> = {
+        '24.03.26': 'https://links.payboxapp.com/zromh6yGe1b',
+      };
+      const defaultLink = 'https://links.payboxapp.com/z6Yvrszcx0b';
+      window.location.href = payboxLinks[workshopDate] || defaultLink;
     } else if (paymentMethod === 'credit') {
       // כרטיס אשראי דרך PayPal Smart Buttons (מאפשר גם PayPal וגם כרטיס אשראי)
       setStep("credit-payment");
