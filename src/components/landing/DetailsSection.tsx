@@ -4,12 +4,6 @@ import { useNavigate } from "react-router-dom";
 
 const workshops = [
   {
-    date: "19.02.26",
-    displayDate: "19.02 (יום חמישי)",
-    status: "soldOut",
-    statusText: "Sold Out"
-  },
-  {
     date: "05.03.26",
     displayDate: "05.03 (יום חמישי)",
     status: "soldOut",
@@ -18,6 +12,12 @@ const workshops = [
   {
     date: "24.03.26",
     displayDate: "24.03 (יום שלישי)",
+    status: "soldOut",
+    statusText: "Sold Out"
+  },
+  {
+    date: "29.04.26",
+    displayDate: "29.04 (יום רביעי)",
     status: "open",
     statusText: "פתוח להרשמה"
   }
